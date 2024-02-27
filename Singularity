@@ -8,10 +8,14 @@ Understand: $PATH, $LD_LIBRARY_PATH, $PYTHONPATH, $OMP_NUM__THREADS, '$CUDA_VISI
 There are two types of specifications you can use:
 1)Dockerfile to build an image using Docker or dockerhub and convert to Singularity 
 2) A Singularity file to create an image using singularity (needs roots privilegy) on singularity hub.
+################################### LINKS ##################################################################
+CURSO  https://sib-swiss.github.io/containers-introduction-training/2023.12/course_material/introduction_containers/
+AULA https://sib-swiss.github.io/containers-introduction-training/2023.12/course_material/apptainer/
 
-Curso https://sib-swiss.github.io/containers-introduction-training/2023.12/course_material/introduction_containers/
-Aula https://sib-swiss.github.io/containers-introduction-training/2023.12/course_material/apptainer/
-#####################################################################################################
+CONTEINER DOCK https://docs.sylabs.io/guides/3.7/user-guide/quick_start.html
+TUTORIAL https://hub.docker.com/r/biocontainers/phyml/tags
+
+##########################################INSTALLATION###########################################################
 
 ............ comeca aqui, precisa ser root.........
 # Ensure repositories are up-to-date
@@ -47,8 +51,8 @@ echo "source /home/admin/singularity-ce/share/bash-completion/completions/singul
 ### repositorio com varios programas
 https://depot.galaxyproject.org/singularity/
 
+##########################################USAGE###########################################################
 Pulling an image
-
 Use apptainer pull to convert an image from dockerhub to the ‘apptainer image format’ (.sif)
 singularity pull docker://godlovedc/lolcow
 
