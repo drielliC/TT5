@@ -1,0 +1,72 @@
+Genome annotation of Ischnosiphon puberulus
+Orientação e códigos : Diego Riaño-Pachón
+Orientação e dados : Clarisse Palma
+
+Gene prediction with extrinsic evidence
+We use two pipelines to predict gene models exploiting extrinsic evidence, BRAKER which can use Protein, RNASeq or both kinds of dataset as extrinsic evidence, and GALBA which only uses proteins as extrinsic evidence.
+N      	           Evidence	                                            BRAKER	                  GALBA
+1	Protein Sequences Viridiplantae from OrthoDB v10	                      X                        	X
+2	RNASeq (41 individuals: Igapó and Terra firme)	                        X	
+3	Protein Sequences order zimbi from NCBI		                                                        X
+4	Proteins Viridiplantae and RNASeq	                                      X	
+
+BRAKER was run in three different ways, with only evidence 1, only evidence 2 and with both evidences 1 and 2. 
+GALBA was run two times, onece with evidence 1 and once with evidence 2.
+We run annotation on the collapsed version of the genome and also on hap.
+
+###################################################################################################################################################################################
+ ssh -p 1000 drielli.canal@bioinfo.cena.usp.br
+
+nano script_Braker.sh
+chmod u+x hello.sh
+¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
+nano submitHisatDTA_hap1.sh
+
+#!/bin/bash
+
+#PBS -q par128
+#PBS -l nodes=1:ppn=128
+#PBS -m abe
+
+CPUS=128
+cd $/Storage/data1/drielli.canal 
+
+module load hisat/2.2.1 samtools/1.17
+mkdir -p RNASeqmapping/
+cd RNASeqmapping/
+hisat2-build --large-index -p $CPUS --seed 12345 ../../yahs.PITALB_v0.2.col_scaffolds_final.fa.masked yahs.PITALB_v0.2.col_scaffolds_final.masked
+
+hisat2 --dta -x yahs.PITALB_v0.2.col_scaffolds_final.masked -1 ../../RNA-seq_albiflos/Subsample/CHA742B_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/CHA744_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/CHA745A_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/CHA747_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/CHA749B_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO670_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO674A_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO675_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO677_RNA_1.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO678_RNA_1.fastq.gz -2 ../../RNA-seq_albiflos/Subsample/CHA742B_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/CHA744_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/CHA745A_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/CHA747_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/CHA749B_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO670_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO674A_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO675_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO677_RNA_2.fastq.gz,../../RNA-seq_albiflos/Subsample/PBO678_RNA_2.fastq.gz --rna-strandness RF --time --no-unal --threads $CPUS --seed 12345 | samtools view -Sbh > hisat2_output_coll.bam
+
+samtools sort -o hisat2_output_coll.sorted.bam --threads $CPUS hisat2_output_coll.bam
+samtools index hisat2_output_coll.sorted.bam
+
+
+¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
+
+#!/bin/bash
+
+#$ -q all.q
+#$ -V
+#$ -cwd
+
+#PBS -q par128
+#PBS -l nodes=1:ppn=128
+#PBS -m abe
+
+module load singularity/3.8.3-gcc-9.4.0
+
+cd $PBS_O_WORKDIR
+
+export BRAKER_SIF=/home/lovelace/proj/proj832/diriano/Projects/Sugarcane/Assemblies/B4/BRAKER3/braker3.sif
+
+#BRAKER only RNASeq
+singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --species "Pitcairnia albiflos hap1 2" --genome=yahs.PITALB_v0.2.hap1_scaffolds_final_mod.fa.masked --bam=RNASeqmapping/hisat2_output_hap1.sorted.bam --softmasking --workingdir=PITALB_v0.2.hap1_scaffolds_final_mod.masked.braker3.feb2024.onlyRNASeq --threads 128
+docker1 run --rm -v /workdir/$USER/project2:/data  biohpc/braker2 sh -c ". /root/source.sh; braker.pl --species=mysp --genome=genome.fa.masked --bam=RNA.sorted.bam --softmasking --gff3 --cores=20"
+
+#singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --species "Saccharum SP80-3280" --genome=B2.asm.hic.p_utg_mask.soft.fasta --prot_seq=external_prots.fasta --bam=hisat2_output.sorted.bam --softmasking --workingdir=braker3.junhe23 --threads 16
+#BRAKER RNASeq e Prots
+#singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --species "Pitcairnia albiflos hap1" --genome=yahs.PITALB_v0.2.hap1_scaffolds_final_mod.fa.masked --prot_seq=Viridiplantae.fa --bam=RNASeqmapping/hisat2_output_hap1.sorted.bam --softmasking --workingdir=PITALB_v0.2.hap1_scaffolds_final_mod.masked.braker3.feb2024.RNASeqProtsViridiplantaeOrthoDB --threads 128
+
+#BRAKER only Prots
+singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --species "Pitcairnia albiflos hap1 3" --genome=yahs.PITALB_v0.2.hap1_scaffolds_final_mod.fa.masked --prot_seq=Viridiplantae.fa --softmasking --workingdir=PITALB_v0.2.hap1_scaffolds_final_mod.masked.braker3.feb2024.onlyProtsViridiplantaeOrthoDB --threads 128
