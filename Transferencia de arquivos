@@ -1,0 +1,19 @@
+Transferência de arquivos via FTP
+https://www.youtube.com/watch?v=ANUvREahnRs
+
+- Transferência de arquivo/pasta para o mesmo computador:
+rsync -ahvP /home/usuario/arquivo/ /pasta/usuario/destino
+
+- Transferência de arquivo/pasta para outro computador:
+rsync -ahvzP /home/usuario/arquivo/ usuario@local.com:/pasta/usuario/destino
+
+-a, --archive mode: O modo de arquivamento copia links, preserva permissões, horários de modificação, grupo e proprietário e, com acesso de superusuário, preserva arquivos de dispositivos (drivers, etc.). Esta bandeira é essencial.
+
+-h, --human readable: números de saída em um formato legível por humanos
+
+-v, --verbose: o comando imprime na tela tudo o que está fazendo
+
+-z, --compress: comprime os arquivos durante a transferência e descompacta no destino
+
+-P, --partial progress: imprime na tela a porcentagem de transferência do arquivo.
+*************************************************************************
