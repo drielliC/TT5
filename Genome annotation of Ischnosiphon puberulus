@@ -43,7 +43,6 @@ samtools index hisat2_output_coll.sorted.bam
 
 
 ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
-
 #!/bin/bash
 
 #$ -q all.q
@@ -54,7 +53,7 @@ samtools index hisat2_output_coll.sorted.bam
 #PBS -l nodes=1:ppn=128
 #PBS -m abe
 
-module load singularity/3.8.3-gcc-9.4.0
+module load singularity-ce/3.11.2
 
 cd $PBS_O_WORKDIR
 
@@ -67,6 +66,40 @@ docker1 run --rm -v /workdir/$USER/project2:/data  biohpc/braker2 sh -c ". /root
 #singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --species "Saccharum SP80-3280" --genome=B2.asm.hic.p_utg_mask.soft.fasta --prot_seq=external_prots.fasta --bam=hisat2_output.sorted.bam --softmasking --workingdir=braker3.junhe23 --threads 16
 #BRAKER RNASeq e Prots
 #singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --species "Pitcairnia albiflos hap1" --genome=yahs.PITALB_v0.2.hap1_scaffolds_final_mod.fa.masked --prot_seq=Viridiplantae.fa --bam=RNASeqmapping/hisat2_output_hap1.sorted.bam --softmasking --workingdir=PITALB_v0.2.hap1_scaffolds_final_mod.masked.braker3.feb2024.RNASeqProtsViridiplantaeOrthoDB --threads 128
-
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 #BRAKER only Prots
 singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --species "Pitcairnia albiflos hap1 3" --genome=yahs.PITALB_v0.2.hap1_scaffolds_final_mod.fa.masked --prot_seq=Viridiplantae.fa --softmasking --workingdir=PITALB_v0.2.hap1_scaffolds_final_mod.masked.braker3.feb2024.onlyProtsViridiplantaeOrthoDB --threads 128
+
+&&&&&&&submitHisatDTA_hap3.sh&&&&&&&&&
+braker.pl --species "Ischnosiphon" --genome $PREFIX --prot_seq $prot --softmasking
+
+&&&&&&submitHisatDTA_hap7.sh&&&&&&&&&&
+#!/bin/bash
+#$ -q all.q
+#$ -cwd
+#$ -V
+
+PREFIX=/Storage/data1/drielli.canal/ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.masked
+prot=/Storage/data1/drielli.canal/Zingiberales_FINAL_FINAL_FINAL.fasta
+
+module load BRAKER/2.1.6
+
+braker.pl --species "Ischnosiphon" --genome $PREFIX --prot_seq $prot --prg=exonerate  \ --trainFromGth --softmasking
+_____________________________________________________________________________________________________________________________
+braker.pl: Este é o comando principal para executar o BRAKER2. O .pl no final do comando sugere que é um script Perl. Este comando inicia o processo de predição de genes e anotação do genoma.
+
+--species "Ischnosiphon": Aqui você especifica a espécie para a qual você está realizando a predição de genes. Substitua "Ischnosiphon" pelo nome da espécie que você está trabalhando.
+
+--genome $PREFIX: Aqui você especifica o caminho para o arquivo do genoma que você deseja anotar. Substitua $PREFIX pelo caminho real para o arquivo do genoma.
+
+--prot_seq $prot: Este parâmetro especifica o caminho para o arquivo de sequências de proteínas. Essas proteínas podem ser sequências homólogas de outras espécies relacionadas. Substitua $prot pelo caminho real para o arquivo de sequências de proteínas.
+
+--prg=exonerate: Este parâmetro especifica o programa a ser usado para alinhar as sequências de proteínas ao genoma. Neste caso, está usando o Exonerate. O Exonerate é um programa de alinhamento de sequências que é frequentemente usado em bioinformática.
+
+--trainFromGth: Este parâmetro instrui o BRAKER2 a treinar o GeneMark-ET usando os alinhamentos obtidos pelo Gth (Genome Threader), que é um programa usado para alinhar sequências de proteínas ao genoma.
+
+--softmasking: Este parâmetro indica que o genoma está softmasked, o que significa que as regiões repetitivas foram mascaradas em minúsculas. Isso ajuda a evitar a predição incorreta de genes em regiões repetitivas.
+
+Certifique-se de substituir as variáveis como $PREFIX e $prot pelos caminhos reais e executar esses comandos em um ambiente adequado para o BRAKER2.
+
+
