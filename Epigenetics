@@ -19,6 +19,46 @@ JOBID   ARRAY_TA PARTITIO NAME     USER     ACCOUNT  SUBMIT_TIME      STATE    T
 1709180 N/A      basic    bisTrimE palma    botany   2024-05-28T12:57 RUNNING  2:45:31     3-00:00:00  2-21:14:29  cpu=40,mem=90G,node=1,bill 0              node-b03
 
 ___________________________________________________________________________________________________________________________________________________________________________________
+ENTENDENDO BISMARK 
+
+${bismark_dir}/bismark_genome_preparation \
+--verbose \
+--parallel 28 \
+--path_to_aligner ${bowtie2_dir} \
+--output_dir ./roslin_M/Bisulfite_Genome \
+--genome_folder ${genome_folder}
+
+O output do comando bismark_genome_preparation será uma pasta chamada Bisulfite_Genome
+Dentro da pasta CT_conversion, você encontrará os seguintes arquivos:
+
+    Arquivos de Índice (*.bt2):
+
+        Esses arquivos são os índices criados para o alinhamento dos reads com o Bismark. Eles são usados pelo Bismark durante o processo de mapeamento para localizar rapidamente as posições no genoma de referência.
+
+        Os arquivos com extensão .bt2 são parte dos índices criados pelo Bowtie2, um dos alinhadores usados pelo Bismark. Eles incluem o índice principal (BS_CT.1.bt2, BS_CT.2.bt2, BS_CT.3.bt2, BS_CT.4.bt2) e os índices reversos (BS_CT.rev.1.bt2, BS_CT.rev.2.bt2).
+
+Arquivo de Sequência de Referência (genome_mfa.CT_conversion.fa):
+
+    Este arquivo contém a sequência de referência do genoma convertido para o formato de conversão de CT. Ele é usado pelo Bismark durante o alinhamento dos reads para comparar e encontrar correspondências no genoma de referência.
+
+
+As conversões de CT e GA referem-se aos dois tipos de metilação do DNA que são detectados no sequenciamento de bisulfite:
+
+    CT Conversion:
+        Na conversão de CT, o bisulfite converte citosinas não metiladas (C) em uracilos (T), enquanto as citosinas metiladas (5-metilcitosinas, 5mC) permanecem inalteradas.
+        Portanto, após a conversão de CT, as citosinas não metiladas são representadas como timinas (T), enquanto as citosinas metiladas permanecem como citosinas (C).
+        O Bismark usa a conversão de CT para mapear os reads de sequenciamento e detectar a metilação do DNA. Durante o alinhamento, ele procura correspondências entre as sequências de leitura e a sequência de referência convertida de CT.
+
+    GA Conversion:
+        Na conversão de GA, o bisulfite converte guaninas (G) em adenosinas (A), enquanto as adeninas (A) permanecem inalteradas.
+        A conversão de GA é geralmente usada em experimentos de controle para validar a eficácia da conversão de bisulfite, pois as guaninas (G) em locais não metilados são convertidas em adenosinas (A) durante o tratamento com bisulfite.
+        Os dados de sequenciamento de GA convertidos podem ser usados como controle para verificar a eficácia da conversão de bisulfite e identificar eventuais falhas no processo de conversão.
+
+Portanto, a principal diferença entre as conversões de CT e GA está no tipo de base que é convertida durante o tratamento com bisulfite e na aplicação dos dados convertidos. A conversão de CT é usada para detectar a metilação do DNA, enquanto a conversão de GA é usada para controle de qualidade e validação da conversão de bisulfite.
+____________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+
 
   GNU nano 5.6.1                                                                                  01_nextflow.sh                                                                                            
 #!/bin/bash
