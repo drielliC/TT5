@@ -9,7 +9,7 @@ source ~/.bashrc
 nextflow -v
 
 #TSV FILES PATH /lisc/scratch/botany/clarisse/methil/trimmed/Epi/bismark_trim/12
-#GENOME PATH  H1_RAN_yahs_scaffold.fasta
+#GENOME PATH /lisc/scratch/botany/clarisse/reference/H1_RAN_yahs_scaffold.fasta
 
 sbatch 01_nextflow.sh
 Submitted batch job 1709609
