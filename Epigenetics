@@ -1,0 +1,41 @@
+#Install nextflow without sudo permissions
+mkdir ~/software
+wget -qO- https://get.nextflow.io | bash
+mv nextflow ~/software
+chmod +x ~/software/nextflow
+nano ~/.bashrc
+export PATH="$HOME/software:$PATH"
+source ~/.bashrc
+nextflow -v
+
+
+sbatch 01_nextflow.sh
+Submitted batch job 1709609
+squeue -u palma
+JOBID   ARRAY_TA PARTITIO NAME     USER     ACCOUNT  SUBMIT_TIME      STATE    TIME        TIME_LIMIT  TIME_LEFT   TRES_ALLOC                 NICE FEAT LICE NODELIST(REASON)
+1709180 N/A      basic    bisTrimE palma    botany   2024-05-28T12:57 RUNNING  2:45:31     3-00:00:00  2-21:14:29  cpu=40,mem=90G,node=1,bill 0              node-b03
+
+
+
+  GNU nano 5.6.1                                                                                  01_nextflow.sh                                                                                            
+#!/bin/bash
+#
+#SBATCH --cpus-per-task=30
+#SBATCH --mem=5GB
+#SBATCH --job-name=trim_g
+#SBATCH --time=02:00:00
+#SBATCH --mail-type=ALL
+#SBATCH --output=log/%x.%j.out
+#SBATCH --error=log/%x.%j.err
+
+# Load a compatible Java version
+module load java/11
+
+module load java
+module load conda
+# Set the Nextflow version to use
+export NXF_VER=24.04.1.5913
+
+# Run the Nextflow pipeline
+nextflow run epidiverse/wgbs -profile test,docker
+
