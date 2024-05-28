@@ -8,6 +8,9 @@ export PATH="$HOME/software:$PATH"
 source ~/.bashrc
 nextflow -v
 
+#path contendo arquivos em tsv /lisc/scratch/botany/clarisse/methil/trimmed/Epi/bismark_trim/12
+#genome path /lisc/scratch/botany/clarisse/reference
+
 
 sbatch 01_nextflow.sh
 Submitted batch job 1709609
