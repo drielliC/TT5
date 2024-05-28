@@ -10,6 +10,7 @@ nextflow -v
 
 #TSV FILES PATH /lisc/scratch/botany/clarisse/methil/trimmed/Epi/bismark_trim/12
 #GENOME PATH /lisc/scratch/botany/clarisse/reference/H1_RAN_yahs_scaffold.fasta
+#BAM FILES /lisc/scratch/botany/clarisse/methil/trimmed/Epi/bismark_trim
 
 sbatch 01_nextflow.sh
 Submitted batch job 1709609
@@ -57,7 +58,54 @@ As conversões de CT e GA referem-se aos dois tipos de metilação do DNA que s�
 Portanto, a principal diferença entre as conversões de CT e GA está no tipo de base que é convertida durante o tratamento com bisulfite e na aplicação dos dados convertidos. A conversão de CT é usada para detectar a metilação do DNA, enquanto a conversão de GA é usada para controle de qualidade e validação da conversão de bisulfite.
 ____________________________________________________________________________________________________________________________________________________________________________________________________
 
+#!/bin/bash
+#
+#SBATCH --cpus-per-task=30
+#SBATCH --mem=5GB
+#SBATCH --job-name=trim_g
+#SBATCH --time=02:00:00
+#SBATCH --mail-type=ALL
+#SBATCH --output=log/%x.%j.out
+#SBATCH --error=log/%x.%j.err
 
+#!/bin/bash
+
+# Carregar os módulos necessários
+module load bismark/0.24.2
+module load bowtie2/2.5.4
+
+# Set the directory where Bismark is installed
+bismark_dir="/lisc/app/bismark/0.24.2/"
+
+# Set the directory where Bowtie2 is installed
+bowtie2_dir="/lisc/app/bowtie2/2.5.3/"
+
+# Define o diretório onde estão localizados os arquivos de leitura
+reads_dir="/lisc/scratch/botany/clarisse/methil/trimmed/Epi"
+
+# Define o diretório onde o genoma de referência está localizado
+genome_folder="/lisc/scratch/botany/clarisse/reference/"
+
+# Verifica se os diretórios de saída existem, se não, cria-os
+output_dir="${reads_dir}/Mcap_tg"
+mkdir -p ${output_dir}
+
+module load bismark
+
+# Executa o Bismark para cada par de arquivos de leitura
+for sample in Epi-103t Epi-145t Epi-178t Epi-22t Epi-40t Epi-75t; do
+    ${bismark_dir}/bismark \
+    --path_to_bowtie ${bowtie2_dir} \
+    --genome ${genome_folder} \
+    -p 4 \
+    --score_min L,0,-0.6 \
+    --non_directional \
+    -1 ${reads_dir}/${sample}.1.fq.gz \
+    -2 ${reads_dir}/${sample}.2.fq.gz \
+    -o ${output_dir}
+done
+
+________________________________________________________________________________________________________________________________________________________________________________________________________
 
 
   GNU nano 5.6.1                                                                                  01_nextflow.sh                                                                                            
