@@ -5,10 +5,10 @@ Orientação e dados : Clarisse Palma
 Gene prediction with extrinsic evidence
 We use two pipelines to predict gene models exploiting extrinsic evidence, BRAKER which can use Protein, RNASeq or both kinds of dataset as extrinsic evidence, and GALBA which only uses proteins as extrinsic evidence.
 N      	           Evidence	                                            BRAKER	                  GALBA
-1	Protein Sequences Viridiplantae from OrthoDB v10	                      X                        	X
-2	RNASeq (41 individuals: Igapó and Terra firme)	                        X	
-3	Protein Sequences order zimbi from NCBI		                                                        X
-4	Proteins Viridiplantae and RNASeq	                                      X	
+1	RNASeq (41 individuals: Igapó and Terra firme)	                        X	
+2	Protein Sequences order Zingiberales from NCBI                         X                          X
+3	Proteins Viridiplantae and RNASeq	                                     X	
+4	Protein Sequences Order Zingiberales from  OrthoDB v10	                X                        	X
 
 BRAKER was run in three different ways, with only evidence 1, only evidence 2 and with both evidences 1 and 2. 
 GALBA was run two times, onece with evidence 1 and once with evidence 2.
