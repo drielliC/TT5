@@ -28,6 +28,13 @@ filter create output only if a preview command for executable
 command line '$variables' used in the command 
 
 
+
+___
+dever de casa implementar 
+https://github.com/bluenote-1577/sylph/wiki/sylph-cookbook#database-sketching-options
+
+
+
 add TEST to  your tool 
 <test>
 example data file 
