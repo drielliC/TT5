@@ -1,0 +1,42 @@
+Planemo : https://planemo.readthedocs.io/en/latest/installation.html
+
+python3 -m venv planemo
+ . planemo/bin/activate
+pip install planemo
+
+planemo serve .
+
+
+
+# metadata document that describes input, parameters, output etc. 
+.shed file that contains the description
+
+CREATE xml document 
+tool has a unique ID 
+name and version
+description
+
+requirements (what need to be install = name of conda version
+
+error message  (log file)
+
+input section ( define all parameters of your tool) (parameter, type, format )
+https://github.com/galaxyproject/galaxy/blob/dev/lib/galaxy/config/sample/datatypes_conf.xml.sample
+output type selection (format html) 
+filter create output only if a preview command for executable
+
+command line '$variables' used in the command 
+
+
+add TEST to  your tool 
+<test>
+example data file 
+output compare with the example 
+help section 
+citation 
+
+python language similar 
+
+
+https://github.com/galaxyproject/galaxy-language-server
+https://docs.galaxyproject.org/en/latest/dev/schema.html
