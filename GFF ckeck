@@ -1,0 +1,15 @@
+Install  https://github.com/NAL-i5K/GFF3toolkit
+
+Detect GFF3 format errors (~50 types of errors)
+
+Quick start: gff3_QC -g example_file/example.gff3 -f example_file/reference.fa -o error.txt -s statistic.txt
+
+tipos de erros : https://github.com/NAL-i5K/GFF3toolkit/blob/master/gff3tool/lib/ERROR/ERROR.py
+
+Esf0020': 'Version is not a valid integer',
+'Esf0012': 'Found Ns in a feature using the external FASTA', # This error would be detected by the program as well, but the error message has to be modified in gff3.py
+
+Correct GFF3 format errors (back)
+gff3_fix -qc_r error.txt -g gene_label_helixer.gff -og helixer_corrected.gff3
+
+ gff3_to_fasta -g helixer_corrected.gff3 -f ../../ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.masked -st pep -d simple -o helixer_pep_sequence
