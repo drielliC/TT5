@@ -1,0 +1,2 @@
+singularity exec busco_5.4.7--pyhdfd78af_0.sif busco -i my_proteins.fasta -o busco_liliopsida_protein_results -l liliopsida_odb10 -m proteins
+singularity exec busco_5.4.7--pyhdfd78af_0.sif busco -i my_proteins.fasta -o busco_protein_results -l embryophyta_odb10 -m proteins -c 8
