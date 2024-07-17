@@ -1,0 +1,47 @@
+#INSTALL
+
+# Install cpanminus
+sudo apt-get update
+sudo apt-get install cpanminus
+
+# Install BioPerl
+sudo cpanm Bio::Perl
+
+# Install additional Perl modules
+sudo cpanm DBI
+sudo cpanm DBD::SQLite
+sudo cpanm Parallel::ForkManager
+
+# Download and install EVM
+cd /path/to/install
+git clone https://github.com/EVidenceModeler/EVidenceModeler.git
+cd EVidenceModeler
+export EVM_HOME=$(pwd)
+export PATH=$EVM_HOME:$PATH
+
+# Verify installation
+perl $EVM_HOME/EvmUtils/write_EVM_commands.pl --help
+____________________________________________________
+#PREPARE FILES  
+Step 1: Prepare Input Files
+1. Genome Sequence File (FASTA format) masked
+2. Gene Prediction Files (GFF3 format)
+3. Protein Homology Evidence (GFF3 format)
+4. Transcript Evidence (GFF3 format)
+Check the Format of the Files
+
+conda install -c bioconda agat
+agat_convert_sp_gxf2gxf.pl --gff output.gff3 -o validated_output.gff3
+
+__________________________________________________________________
+#RUN
+perl $EVM_HOME/EvmUtils/write_EVM_commands.pl \
+--genome ~/Documents/alunos/driii/dataUNICAMP/ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.masked \
+--weights weights.txt \
+--gene_predictions predictions/*.gff3 \
+--protein_alignments protein_homology/*.gff3 \
+--transcript_alignments transcript_evidence/*.gff3 \
+--output_file_name evm.out
+
+perl $EVM_HOME/EvmUtils/execute_EVM_commands.pl EVM_commands.list
+
