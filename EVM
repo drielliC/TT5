@@ -43,7 +43,7 @@ ATENÇÃO FORMATAR GFF3
 
 agat_convert_sp_gxf2gxf.pl --gff output.gff3 -o validated_output.gff3
 
-../EvmUtils/misc/augustus_GFF3_to_EVM_GFF3.pl gene_predictions.gff3 > gene_predictions.evm.gff3
+../EvmUtils/misc/braker_GTF_to_EVM_GFF3.pl gene_predictions.gff3 > gene_predictions.evm.gff3
 
 SCRIPTS dentro do EVM 
 EVidenceModeler/EvmUtils$ ls
@@ -61,6 +61,7 @@ augustus_GTF_to_EVM_GFF3.pl	       exons_described_to_token_fmt.pl	   GeneMarkHM
 augustus_merge_stop_codons_to_GFF3.pl  extract_asmbl_subset_from_gff.pl    genemarkHMM_v2.2.to_GFF3.pl	    maker_gff_sep_features_by_type.pl  SNAP_ExonEtermEinitEsngl_gff_to_gff3.pl
 braker_GTF_to_EVM_GFF3.pl	       fgenesh_to_GFF3.pl		   genomeThreader_to_evm_gff3.pl    maker_match_gff_to_gene_gff3.pl    taco_gtf_to_alignment_gff3.pl
 
+~/Desktop/SIF$ singularity exec agat_1.0.0--pl5321hdfd78af_0.sif agat_convert_sp_gxf2gxf.pl --gff ~/Documents/alunos/driii/dataUNICAMP/Annotation/helixer/gene_label_helixer.gff -o gene_label_helixer.gff3
 __________________________________________________________________
 #RUN
 perl $EVM_HOME/EvmUtils/write_EVM_commands.pl \
