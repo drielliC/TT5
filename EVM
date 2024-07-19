@@ -28,15 +28,6 @@ singularity exec ${SINGULARITY_IMAGE} EVidenceModeler --sample_id smalltest.sing
 
 echo "Done. See smalltest.singularity.EVM.* outputs"
 
-
-
-
-
-
-
-
-
-
 ____________________________________________________
 #PREPARE FILES  
 Step 1: Prepare Input Files
@@ -47,8 +38,19 @@ Step 1: Prepare Input Files
 Check the Format of the Files
 
 conda install -c bioconda agat
+ATENÇÃO (NÃO USAR GFFREAD error)
+ATENÇÃO FORMATAR GFF3
+
 agat_convert_sp_gxf2gxf.pl --gff output.gff3 -o validated_output.gff3
 
+../EvmUtils/misc/augustus_GFF3_to_EVM_GFF3.pl gene_predictions.gff3 > gene_predictions.evm.gff3
+
+SCRIPTS dentro do EVM 
+EVidenceModeler/EvmUtils$ ls
+BPbtab.pl			EVMLite.pl		      gene_gff3_to_bed.pl			  gff3_gene_prediction_file_validator.pl  recombine_EVM_partial_outputs.pl
+convert_EVM_outputs_to_GFF3.pl	EVM_to_GFF3.pl		      gff3_file_fix_CDS_phases.pl		  gff_range_retriever.pl		  summarize_btab_tophits.pl
+create_weights_file.pl		execute_EVM_commands.pl       gff3_file_show_phase_based_translations.pl  misc					  transcript_gff3_to_bed.pl
+evidence_modeler.pl		extract_complete_proteins.pl  gff3_file_to_proteins.pl			  partition_EVM_inputs.pl		  write_EVM_commands.pl
 __________________________________________________________________
 #RUN
 perl $EVM_HOME/EvmUtils/write_EVM_commands.pl \
