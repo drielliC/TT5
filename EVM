@@ -51,6 +51,16 @@ BPbtab.pl			EVMLite.pl		      gene_gff3_to_bed.pl			  gff3_gene_prediction_file_
 convert_EVM_outputs_to_GFF3.pl	EVM_to_GFF3.pl		      gff3_file_fix_CDS_phases.pl		  gff_range_retriever.pl		  summarize_btab_tophits.pl
 create_weights_file.pl		execute_EVM_commands.pl       gff3_file_show_phase_based_translations.pl  misc					  transcript_gff3_to_bed.pl
 evidence_modeler.pl		extract_complete_proteins.pl  gff3_file_to_proteins.pl			  partition_EVM_inputs.pl		  write_EVM_commands.pl
+
+SCRIPTS dento de misc$ ls
+AAT_btab_to_gff3.pl		       example_data_files		   GeMoMa_gff_to_gff3.pl	    GFF2_toolkit		       miniprot_GFF_2_EVM_alignment_GFF3.py
+align_GTF_to_align_GFF3.pl	       exclude_asmbl_subset_from_gff.pl    gene_BED_to_gene_GFF3.pl	    glimmerHMM_to_GFF3.pl	       miniprot_GFF_2_EVM_GFF3.py
+alignments_gff3_to_introns.pl	       exonerate_gff_to_alignment_gff3.pl  GeneID_to_gff3.pl		    GxF_to_stats.pl		       nested_gene_gff3_search.pl
+augustus_GFF3_to_EVM_GFF3.pl	       Exonerate_to_evm_gff3.pl		   GeneMark-ES_exon_gff_to_gff3.pl  introns_described_to_token_fmt.pl  prepare_Jigsaw_formats.pl
+augustus_GTF_to_EVM_GFF3.pl	       exons_described_to_token_fmt.pl	   GeneMarkHMM_GTF_to_EVM_GFF3.pl   jigsaw_gff_to_gff3.pl	       SNAP_CDS_to_gff3.pl
+augustus_merge_stop_codons_to_GFF3.pl  extract_asmbl_subset_from_gff.pl    genemarkHMM_v2.2.to_GFF3.pl	    maker_gff_sep_features_by_type.pl  SNAP_ExonEtermEinitEsngl_gff_to_gff3.pl
+braker_GTF_to_EVM_GFF3.pl	       fgenesh_to_GFF3.pl		   genomeThreader_to_evm_gff3.pl    maker_match_gff_to_gene_gff3.pl    taco_gtf_to_alignment_gff3.pl
+
 __________________________________________________________________
 #RUN
 perl $EVM_HOME/EvmUtils/write_EVM_commands.pl \
