@@ -6,7 +6,7 @@ FROM perl:latest
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y git make cpanminus && \
-    cpanm File::ShareDir File::ShareDir::Install File::Which File::Copy::Recursive PerlIO::gzip
+    cpanm File::ShareDir File::ShareDir::Install File::Which File::Copy::Recursive PerlIO::gzip Sort::Naturally
 
 # Clone the AGAT repository
 RUN git clone https://github.com/NBISweden/AGAT.git /opt/AGAT
@@ -22,6 +22,7 @@ WORKDIR /data
 
 # Default command
 CMD ["bash"]
+
 ___________________________________________________
 docker build -t agat-docker .
 docker run -it --rm -v $(pwd):/data agat-docker
