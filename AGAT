@@ -1,0 +1,28 @@
+nano Dockerfile
+
+# Use an official Perl runtime as a parent image
+FROM perl:latest
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y git make cpanminus && \
+    cpanm File::ShareDir File::ShareDir::Install File::Which File::Copy::Recursive PerlIO::gzip
+
+# Clone the AGAT repository
+RUN git clone https://github.com/NBISweden/AGAT.git /opt/AGAT
+
+# Install AGAT
+WORKDIR /opt/AGAT
+RUN perl Makefile.PL && \
+    make && \
+    make install
+
+# Set the working directory
+WORKDIR /data
+
+# Default command
+CMD ["bash"]
+___________________________________________________
+docker build -t agat-docker .
+docker run -it --rm -v $(pwd):/data agat-docker
+agat_convert_sp_gxf2gxf.pl --gff input.gtf -o output.gff3
