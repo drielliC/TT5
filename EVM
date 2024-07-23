@@ -83,3 +83,43 @@ singularity exec ${SINGULARITY_IMAGE} EVidenceModeler --sample_id ISC.singularit
 
 
 echo "Done. See ISC.singularity.EVM.* outputs"
+
+
+_____________________________________________________________________________________
+Exemplo do gff3 testing 
+cat gene_predictions.gff3 | cut -f2 | sort -u | head
+fgenesh
+genemark
+glimmerHMM
+
+cat transcript_alignments.gff3 | cut -f2 | sort -u | head
+alignAssembly-rice_release4_gmapsim4_02152006
+gap2-plant_gene_index.11282006.fasta
+
+cat protein_alignments.gff3 | cut -f2 | sort -u | head
+genewise-nr_minus_rice.fasta
+nap-nr_minus_rice.fasta
+
+weights.txt
+PROTEIN nap-nr_minus_rice.fasta 1
+PROTEIN genewise-nr_minus_rice.fasta    5
+TRANSCRIPT      gap2-plant_gene_index.11282006.fasta    1
+TRANSCRIPT      alignAssembly-rice_release4_gmapsim4_02152006   10
+ABINITIO_PREDICTION     fgenesh 1
+ABINITIO_PREDICTION     genemark        1
+ABINITIO_PREDICTION     glimmerHMM      1
+
+
+_________________________________________________________
+#######MEUS DADOS TESTE############
+
+Rodando separadamente
+Pesos 1 e 1      : C:62.6%[S:58.2%,D:4.4%],F:6.1%,M:31.3%,n:3236
+Pesos 1 e 2      : C:62.7%[S:58.3%,D:4.4%],F:6.3%,M:31.0%,n:3236
+
+Combinando os gffs
+pesos
+ABINITIO_PREDICTION  Augustus  2
+PROTEIN  Helixer  1
+C:62.2%[S:57.7%,D:4.5%],F:6.9%,M:30.9%,n:3236
+
