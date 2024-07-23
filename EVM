@@ -64,13 +64,22 @@ braker_GTF_to_EVM_GFF3.pl	       fgenesh_to_GFF3.pl		   genomeThreader_to_evm_gf
 ~/Desktop/SIF$ singularity exec agat_1.0.0--pl5321hdfd78af_0.sif agat_convert_sp_gxf2gxf.pl --gff ~/Documents/alunos/driii/dataUNICAMP/Annotation/helixer/gene_label_helixer.gff -o gene_label_helixer.gff3
 __________________________________________________________________
 #RUN
-perl $EVM_HOME/EvmUtils/write_EVM_commands.pl \
---genome ~/Documents/alunos/driii/dataUNICAMP/ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.masked \
---weights weights.txt \
---gene_predictions predictions/*.gff3 \
---protein_alignments protein_homology/*.gff3 \
---transcript_alignments transcript_evidence/*.gff3 \
---output_file_name evm.out
+#!/bin/sh
 
-perl $EVM_HOME/EvmUtils/execute_EVM_commands.pl EVM_commands.list
+set -ex
 
+## run EVM
+
+SINGULARITY_IMAGE=~/Desktop/SIF/EVidenceModeler-v2.0.0/Docker/EVidenceModeler.sif
+
+singularity exec ${SINGULARITY_IMAGE} EVidenceModeler --sample_id ISC.singularity \
+                   --genome genome.fasta \
+                   --weights weights.txt \
+                   --gene_predictions gene_predictions.gff3 \
+                   --protein_alignments protein_alignments.gff3 \
+                   --transcript_alignments transcript_alignments.gff3 \
+                   --segmentSize 100000 \
+                   --overlapSize 10000
+
+
+echo "Done. See ISC.singularity.EVM.* outputs"
