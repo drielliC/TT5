@@ -19,7 +19,7 @@ SINGULARITY_IMAGE=../Docker/EVidenceModeler.sif
 # Executar o EVidenceModeler dentro do contêiner Singularity
 singularity exec ${SINGULARITY_IMAGE} EVidenceModeler --sample_id smalltest.singularity \
                    --genome genome.fasta \
-                   --weights ./weights.txt \
+                   --weights ./weight.txt \
                    --gene_predictions gene_predictions.gff3 \
                    --protein_alignments protein_alignments.gff3 \
                    --transcript_alignments transcript_alignments.gff3 \
