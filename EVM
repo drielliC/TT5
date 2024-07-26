@@ -151,6 +151,13 @@ RNAseq_ONLY_braker_evm.gff3           >>       transformei coluna 2 para AUGUSTU
 peso
 ABINITIO_PREDICTION     AUGUSTUS        1
 
+helixer_augustus_evm.gff3              >>       transformei coluna 2 para helixer
+ABINITIO_PREDICTION     helixer 1
+
+
+
+
+
 Combinando os gffs
 pesos
 
