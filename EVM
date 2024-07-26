@@ -150,10 +150,11 @@ C:92.8%[S:85.0%,D:7.8%],F:2.0%,M:5.2%,n:3236
 RNAseq_ONLY_braker_evm.gff3           >>       transformei coluna 2 para AUGUSTUS
 peso
 ABINITIO_PREDICTION     AUGUSTUS        1
+C:82.9%[S:76.3%,D:6.6%],F:9.5%,M:7.6%,n:3236 
 
 helixer_augustus_evm.gff3              >>       transformei coluna 2 para helixer
 ABINITIO_PREDICTION     helixer 1
-
+C:87.7%[S:80.2%,D:7.5%],F:4.6%,M:7.7%,n:3236
 
 
 
