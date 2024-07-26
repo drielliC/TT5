@@ -43,7 +43,16 @@ ATENÇÃO FORMATAR GFF3
 
 agat_convert_sp_gxf2gxf.pl --gff output.gff3 -o validated_output.gff3
 
+ATENÇÂO
+Run the braker with --gff3 parametrs. The output file braker.gff3 can be converted to EVM GFF3 format using augustus_GFF3_to_EVM_GFF3.pl. However, before coveting, you need delete the ; at the end of lline of braker.gff3. For example
+$ head braker.gff3
+$ sed -i 's/;$//g' braker.gff3
+ ../../EVidenceModeler/EvmUtils/misc/augustus_GFF3_to_EVM_GFF3.pl RNAseq_PTN_EVID
+ENCES_Annotation.gff3 > RNAseq_PTN_EVIDENCES_braker_evm.gff3
+
 ../EvmUtils/misc/braker_GTF_to_EVM_GFF3.pl gene_predictions.gff3 > gene_predictions.evm.gff3
+
+ATENÇÂO DUAS COISAS QUE ESTAVAM ERRADAS, UMA DENTRO DO ARQUIVO runMe.Singularity.sh tem que estar assim --weights ./weights.txt e a outra é o TAB dentro do arquivo weights   
 
 SCRIPTS dentro do EVM 
 EVidenceModeler/EvmUtils$ ls
