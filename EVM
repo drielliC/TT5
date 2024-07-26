@@ -43,6 +43,20 @@ ATENÇÃO FORMATAR GFF3
 
 agat_convert_sp_gxf2gxf.pl --gff output.gff3 -o validated_output.gff3
 
+instalar o cpan pra converter gtf to gff3
+cpan Term::ProgressBar
+sudo cpan Term::ProgressBar
+sudo apt-get install cpanminus
+sudo cpanm Term::ProgressBar
+perl -MTerm::ProgressBar -e 'print "Term::ProgressBar is installed\n"'
+
+agat_convert_sp_gxf2gxf.pl --gff [input_annotation].gtf -o RNAseq_ONLY.gff3
+
+SEMPRE VERIFICAR A CONVERSÃO, NÃO SEI PQ ELA ESCREVE NOMES DIFERENTES NA COLUNA 2
+verificação: cat final.output_file.gff3 | cut -f 2
+padronizar nomes
+sed 's/\(^[^ \t]*\t\)GeneMark.hmm3/\1AUGUSTUS/' output_file.gff3> final.output_file.gff3
+
 ATENÇÂO
 Run the braker with --gff3 parametrs. The output file braker.gff3 can be converted to EVM GFF3 format using augustus_GFF3_to_EVM_GFF3.pl. However, before coveting, you need delete the ; at the end of lline of braker.gff3. For example
 $ head braker.gff3
@@ -71,6 +85,11 @@ augustus_merge_stop_codons_to_GFF3.pl  extract_asmbl_subset_from_gff.pl    genem
 braker_GTF_to_EVM_GFF3.pl	       fgenesh_to_GFF3.pl		   genomeThreader_to_evm_gff3.pl    maker_match_gff_to_gene_gff3.pl    taco_gtf_to_alignment_gff3.pl
 
 ~/Desktop/SIF$ singularity exec agat_1.0.0--pl5321hdfd78af_0.sif agat_convert_sp_gxf2gxf.pl --gff ~/Documents/alunos/driii/dataUNICAMP/Annotation/helixer/gene_label_helixer.gff -o gene_label_helixer.gff3
+
+HELIXER 
+ agat_convert_sp_gxf2gxf.pl --gff gene_label_helixer.gff -o helixer.gff3
+../../EVidenceModeler/EvmUtils/misc/augustus_GFF3_to_EVM_GFF3.pl helixer.gff3 > helixer_evm.gff3
+sed 's/\(^[^ \t]*\t\)Augustus/\1helixer/' helixer_evm.gff3 > helixer_augustus_evm.gff3
 __________________________________________________________________
 #RUN
 #!/bin/sh
@@ -123,12 +142,15 @@ _________________________________________________________
 #######MEUS DADOS TESTE############
 
 Rodando separadamente
-Pesos 1 e 1      : C:62.6%[S:58.2%,D:4.4%],F:6.1%,M:31.3%,n:3236
-Pesos 1 e 2      : C:62.7%[S:58.3%,D:4.4%],F:6.3%,M:31.0%,n:3236
+ RNAseq_PTN_EVIDENCES_braker_evm.gff3  >>       transformei coluna 2 para Augustus
+peso
+ABINITIO_PREDICTION     Augustus        1
+C:92.8%[S:85.0%,D:7.8%],F:2.0%,M:5.2%,n:3236
+
+RNAseq_ONLY_braker_evm.gff3           >>       transformei coluna 2 para AUGUSTUS
+peso
+ABINITIO_PREDICTION     AUGUSTUS        1
 
 Combinando os gffs
 pesos
-ABINITIO_PREDICTION  Augustus  2
-PROTEIN  Helixer  1
-C:62.2%[S:57.7%,D:4.5%],F:6.9%,M:30.9%,n:3236
 
