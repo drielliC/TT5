@@ -22,8 +22,11 @@ WORKDIR /data
 
 # Default command
 CMD ["bash"]
-
 ___________________________________________________
 docker build -t agat-docker .
 docker run -it --rm -v $(pwd):/data agat-docker
 agat_convert_sp_gxf2gxf.pl --gff input.gtf -o output.gff3
+
+
+STATS
+agat_sp_statistics.pl --gff your_annotation.gff3
