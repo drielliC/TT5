@@ -28,5 +28,29 @@ docker run -it --rm -v $(pwd):/data agat-docker
 agat_convert_sp_gxf2gxf.pl --gff input.gtf -o output.gff3
 
 
+__________________________________________________
+FROM continuumio/miniconda3
+
+# Create a conda environment and install AGAT with dependencies
+RUN conda create -n agat-env -c bioconda agat && \
+    conda clean -a -y
+
+# Ensure the environment is activated
+SHELL ["conda", "run", "-n", "agat-env", "/bin/bash", "-c"]
+
+# Set the working directory
+WORKDIR /data
+
+# Default command
+CMD ["bash"]
+
+______________________________________________________
+docker build -t agat-conda .
+docker run -it --rm -v ~/Documents/alunos/driii/dataUNICAMP/Annotation/RNAseq_PTN:/data agat-conda bash
+conda activate agat-env
+ls /data
+agat_sp_statistics.pl --gff /data/RNAseq_PTN_EVIDENCES_Annotation.gff3
+
+
 STATS
 agat_sp_statistics.pl --gff your_annotation.gff3
