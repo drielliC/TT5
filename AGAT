@@ -90,13 +90,9 @@ _______________
 #Podemos usar uma imagem Docker que já tenha o AGAT pré-configurado. Vamos tentar usar a imagem diretamente sem precisar ativar o conda dentro do contêiner.
 #Execute o contêiner Docker com a imagem AGAT preconfigurada:
 
-docker run -it --rm -v ~/Documents/alunos/driii/dataUNICAMP/Annotation/PTN_ONLY:/data quay.io/biocontainers/agat:0.8.1--pl5262hdfd78af_0 bash
+docker run -it --rm -v ~/Documents/alunos/driii/dataUNICAMP/Annotation/PTN_ONLY:/data -v ~/Documents/alunos/driii/dataUNICAMP/EVidenceModeler/EVM_run/only2predictions:/genome quay.io/biocontainers/agat:0.8.1--pl5262hdfd78af_0 bash
+ls /data
+ls /genome
 
-#Dentro do contêiner, verifique os scripts disponíveis:
-
-ls /usr/local/bin/
-
-#Tente executar o script agat_sp_extract_sequences.pl diretamente:
-
-agat_sp_extract_sequences.pl --gff /data/Protein_EVIDENCE.gff3 --fasta /data/../../ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.masked --type CDS --output /data/Protein_evidence_pep.fasta
-
+#Certifique-se de que Protein_EVIDENCE.gff3 está em /data e genome.fasta está em /genome.
+agat_sp_extract_sequences.pl --gff /data/Protein_EVIDENCE.gff3 --fasta /genome/ge
