@@ -49,8 +49,54 @@ docker build -t agat-conda .
 docker run -it --rm -v ~/Documents/alunos/driii/dataUNICAMP/Annotation/RNAseq_PTN:/data agat-conda bash
 conda activate agat-env
 ls /data
-agat_sp_statistics.pl --gff /data/RNAseq_PTN_EVIDENCES_Annotation.gff3
 
+agat_sp_statistics.pl --gff /data/RNAseq_PTN_EVIDENCES_Annotation.gff3
 
 STATS
 agat_sp_statistics.pl --gff your_annotation.gff3
+
+________________________________________________________________
+Extrair proteinas 
+
+agat_sp_extract_sequences_from_gff.pl --gff Protein_EVIDENCE.gff3 --fasta ../../ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.masked -p -o Protein_evidence_pep.fasta
+
+#Inicie um contêiner interativo:
+
+bash
+
+docker run -it --rm -v ~/Documents/alunos/driii/dataUNICAMP/Annotation/PTN_ONLY:/data quay.io/biocontainers/agat:0.8.1--pl5262hdfd78af_0 bash
+
+#Dentro do contêiner, tente instalar ou verificar o AGAT:
+
+#Se o conda não estiver disponível, você pode precisar instalar o conda primeiro:
+
+bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
+#enter até o final e yes
+
+/opt/miniconda/bin/conda init
+source ~/.bashrc
+
+/opt/miniconda/bin/conda create --name agat-env -c bioconda agat
+source /opt/miniconda/bin/activate agat-env
+
+# yes and yes
+
+ls /opt/miniconda/envs/agat-env/bin/
+exit
+_______________
+#Usando uma Imagem Docker Preconfigurada
+#Podemos usar uma imagem Docker que já tenha o AGAT pré-configurado. Vamos tentar usar a imagem diretamente sem precisar ativar o conda dentro do contêiner.
+#Execute o contêiner Docker com a imagem AGAT preconfigurada:
+
+docker run -it --rm -v ~/Documents/alunos/driii/dataUNICAMP/Annotation/PTN_ONLY:/data quay.io/biocontainers/agat:0.8.1--pl5262hdfd78af_0 bash
+
+#Dentro do contêiner, verifique os scripts disponíveis:
+
+ls /usr/local/bin/
+
+#Tente executar o script agat_sp_extract_sequences.pl diretamente:
+
+agat_sp_extract_sequences.pl --gff /data/Protein_EVIDENCE.gff3 --fasta /data/../../ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.masked --type CDS --output /data/Protein_evidence_pep.fasta
+
