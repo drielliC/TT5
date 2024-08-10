@@ -1,0 +1,37 @@
+import pandas as pd
+
+def extract_gene_id(full_id):
+    # Extrai o gene ID do campo que começa com "ID=" e termina no primeiro ponto e vírgula ";"
+    return full_id.split(';')[0].replace("ID=", "")
+
+def filter_bed_by_gene_ids(bed_file, gene_ids_file, output_bed_file, gene_column_index=3):
+    # Carregar a lista de IDs de genes
+    with open(gene_ids_file, 'r') as f:
+        gene_ids = set(line.strip() for line in f)
+
+    # Carregar o arquivo BED (verifique o separador, se necessário)
+    bed_df = pd.read_csv(bed_file, sep='\t', header=None)
+
+    # Extrair os IDs dos genes da coluna especificada
+    bed_df['GeneID'] = bed_df[gene_column_index].apply(extract_gene_id)
+
+    # Filtrar o BED pelos IDs de genes extraídos
+    filtered_bed = bed_df[bed_df['GeneID'].isin(gene_ids)]
+
+    # Remover a coluna temporária GeneID
+    filtered_bed = filtered_bed.drop(columns=['GeneID'])
+
+    # Salvar o BED filtrado
+    filtered_bed.to_csv(output_bed_file, sep='\t', header=False, index=False)
+
+if __name__ == "__main__":
+    bed_file = 'ISC_3.singularity.EVM.bed'  # O nome correto do arquivo BED
+    gene_ids_file = 'gene_ids.txt'  # A lista de IDs de genes
+    output_bed_file = 'filtered_output.bed'  # O arquivo BED filtrado de saída
+    gene_column_index = 3  # Índice da coluna onde os IDs de genes estão (4ª coluna)
+
+    filter_bed_by_gene_ids(bed_file, gene_ids_file, output_bed_file, gene_column_index)
+    print(f"Arquivo BED filtrado salvo em: {output_bed_file}")
+
+
+_______________________________________________________________________________________________________
