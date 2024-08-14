@@ -1,0 +1,68 @@
+#O arquivo veio desformatado, contendo numero de colunas irregular, colunas com caracter em branco e também "-".
+ #Script que filtra e formata a coluna dos GOS terms do InterprotScan
+
+nano filtrarGO.py                                                                                              
+
+import pandas as pd
+
+def remover_genes_sem_go(input_file, output_file):
+    # Ler o arquivo manualmente linha por linha
+    with open(input_file, 'r') as file:
+        lines = file.readlines()
+
+    # Processar as linhas para manter apenas as válidas
+    valid_lines = []
+    for line in lines:
+        columns = line.strip().split('\t')
+        if len(columns) == 2:  # Verifica se há exatamente duas colunas (Gene e GO_terms)
+            gene, go_terms = columns
+            if go_terms != '-' and go_terms.strip() != '':  # Filtra GOs válidos
+                valid_lines.append(f"{gene}\t{go_terms}\n")
+
+    # Escrever as linhas válidas no arquivo de saída
+    with open(output_file, 'w') as out_file:
+        out_file.writelines(valid_lines)
+
+    print(f"Genes com GO terms válidos foram salvos em {output_file}")
+
+# Configurações
+input_file = "Interprot_GOterms_sorted"  # Substitua pelo caminho do seu arquivo de entrada
+output_file = "genes_com_go_terms_filtered.txt"  # Arquivo de saída
+
+# Executar a função
+remover_genes_sem_go(input_file, output_file)
+_____________________________________
+import pandas as pd
+
+def combinar_go_terms(interproscan_file, eggnog_file, output_file):
+    # Carregar os dados do InterProScan e EggNOG
+    df_interpro = pd.read_csv(interproscan_file, sep='\t', header=None, dtype=str)
+    df_eggnog = pd.read_csv(eggnog_file, sep='\t', header=0, dtype=str)
+
+    # Garantir que a coluna 13 existe no DataFrame do InterProScan
+    if 13 in df_interpro.columns:
+        df_interpro[13] = df_interpro[13].fillna('-')  # Preencher valores nulos com '-'
+    else:
+        df_interpro[13] = '-'  # Criar a coluna 13 se ela não existir
+
+    # Criar um dicionário para armazenar os GO terms do InterProScan
+    go_terms_dict = df_interpro.groupby(0)[13].apply(lambda x: '|'.join(set(x) - {'-'})).to_dict()
+
+    # Atualizar a coluna 'GOs' no DataFrame do EggNOG com os GO terms combinados
+    df_eggnog['GOs'] = df_eggnog['#query'].map(go_terms_dict).fillna(df_eggnog['GOs'])
+
+    # Salvar o resultado em um novo arquivo
+    df_eggnog.to_csv(output_file, sep='\t', index=False)
+
+    print(f"Arquivo combinado foi salvo em {output_file}")
+
+# Configurações
+interproscan_file = "genes_com_go_terms_filtered.txt"  # Substitua pelo caminho do seu arquivo InterProScan
+eggnog_file = "eggNOG_Mapper_annotations.tabular"  # Substitua pelo caminho do seu arquivo EggNOG
+output_file = "output_combined_go_terms.txt"  # Arquivo de saída
+
+# Executar a função
+combinar_go_terms(interproscan_file, eggnog_file, output_file)
+
+
+  
