@@ -32,37 +32,35 @@ output_file = "genes_com_go_terms_filtered.txt"  # Arquivo de saída
 # Executar a função
 remover_genes_sem_go(input_file, output_file)
 _____________________________________
+#você pode usar o seguinte script em Python para combinar os GO terms para genes com o mesmo ID do Interprot
+
 import pandas as pd
+from collections import defaultdict
 
-def combinar_go_terms(interproscan_file, eggnog_file, output_file):
-    # Carregar os dados do InterProScan e EggNOG
-    df_interpro = pd.read_csv(interproscan_file, sep='\t', header=None, dtype=str)
-    df_eggnog = pd.read_csv(eggnog_file, sep='\t', header=0, dtype=str)
+def combinar_go_terms(input_file, output_file):
+    # Dicionário para armazenar os GO terms combinados para cada gene
+    go_terms_dict = defaultdict(set)
 
-    # Garantir que a coluna 13 existe no DataFrame do InterProScan
-    if 13 in df_interpro.columns:
-        df_interpro[13] = df_interpro[13].fillna('-')  # Preencher valores nulos com '-'
-    else:
-        df_interpro[13] = '-'  # Criar a coluna 13 se ela não existir
+    # Ler o arquivo linha por linha
+    with open(input_file, 'r') as file:
+        for line in file:
+            line = line.strip()
+            if line:  # Ignorar linhas vazias
+                gene_id, go_terms = line.split('\t')
+                # Adicionar os GO terms ao conjunto correspondente ao gene_id
+                go_terms_dict[gene_id].update(go_terms.split('|'))
 
-    # Criar um dicionário para armazenar os GO terms do InterProScan
-    go_terms_dict = df_interpro.groupby(0)[13].apply(lambda x: '|'.join(set(x) - {'-'})).to_dict()
-
-    # Atualizar a coluna 'GOs' no DataFrame do EggNOG com os GO terms combinados
-    df_eggnog['GOs'] = df_eggnog['#query'].map(go_terms_dict).fillna(df_eggnog['GOs'])
-
-    # Salvar o resultado em um novo arquivo
-    df_eggnog.to_csv(output_file, sep='\t', index=False)
-
-    print(f"Arquivo combinado foi salvo em {output_file}")
+    # Escrever os GO terms combinados em um novo arquivo
+    with open(output_file, 'w') as file:
+        file.write('Gene\tGO_terms\n')
+        for gene_id, go_set in go_terms_dict.items():
+            combined_go_terms = '|'.join(sorted(go_set))  # Ordenar GO terms para consistência
+            file.write(f'{gene_id}\t{combined_go_terms}\n')
 
 # Configurações
-interproscan_file = "genes_com_go_terms_filtered.txt"  # Substitua pelo caminho do seu arquivo InterProScan
-eggnog_file = "eggNOG_Mapper_annotations.tabular"  # Substitua pelo caminho do seu arquivo EggNOG
-output_file = "output_combined_go_terms.txt"  # Arquivo de saída
+input_file = 'genes_com_go_terms_filtered.txt'
+output_file = 'genes_combined_go_terms.txt'
 
 # Executar a função
-combinar_go_terms(interproscan_file, eggnog_file, output_file)
-
-
-  
+combinar_go_terms(input_file, output_file)
+________________________________________________________________
