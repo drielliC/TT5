@@ -64,3 +64,30 @@ output_file = 'genes_combined_go_terms.txt'
 # Executar a função
 combinar_go_terms(input_file, output_file)
 ________________________________________________________________
+import pandas as pd
+
+# Load the files
+genes_file = 'genes_combined_go_terms.txt'
+eggnog_file = 'eggNOG_Mapper_annotations.tabular'
+
+# Read the genes combined GO terms file
+genes_df = pd.read_csv(genes_file, sep='\t', names=['Gene', 'GO_terms'])
+
+# Read the eggNOG annotations file
+eggnog_df = pd.read_csv(eggnog_file, sep='\t')
+
+# Merge the two dataframes on the gene ID
+merged_df = eggnog_df.merge(genes_df, left_on='#query', right_on='Gene', how='left')
+
+# Replace the GOs column with the new GO_terms
+merged_df['GOs'] = merged_df['GO_terms']
+
+# Drop the unnecessary columns
+merged_df.drop(columns=['Gene', 'GO_terms'], inplace=True)
+
+# Save the updated dataframe to a new file
+output_file = 'updated_eggNOG_annotations.tabular'
+merged_df.to_csv(output_file, sep='\t', index=False)
+
+print(f"Updated file saved as {output_file}")
+
