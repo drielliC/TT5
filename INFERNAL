@@ -1,0 +1,17 @@
+#Infernal (INFERence of RNA ALignment) é um pacote de software amplamente utilizado para a identificação e anotação de RNAs não codificantes (ncRNA) em sequências de DNA. 
+#Ele usa modelos de covariância (CMs) que descrevem a estrutura secundária consensual e a conservação de sequências de famílias de RNAs.
+
+#Download 
+sudo apt-get install infernal
+
+# Preparar o Banco de Dados de Modelos de Covariância (Infernal utiliza modelos de covariância (CMs) para encontrar ncRNAs.
+#Esses modelos podem ser obtidos do banco de dados Rfam, que é uma coleção de famílias de ncRNA com seus respectivos modelos.) 
+#BAIXAR E DESCOMPACTAR
+wget ftp://ftp.ebi.ac.uk/pub/databases/Rfam/CURRENT/Rfam.cm.gz
+gunzip Rfam.cm.gz
+
+#  indexar o banco de dados Rfam.cm
+cmpress Rfam.cm
+
+#Predição de ncRNA
+cmsearch --tblout ncRNA_results.tblout --cut_ga Rfam.cm genoma_montado.fasta
