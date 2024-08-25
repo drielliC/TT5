@@ -1,0 +1,17 @@
+#O UniProt oferece duas principais versões do banco de dados:
+#UniProtKB/Swiss-Prot: Contém sequências de proteínas revisadas e anotadas manualmente.
+#UniProtKB/TrEMBL: Contém sequências de proteínas automatizadas, não revisadas.
+
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz
+
+gunzip uniprot_sprot.fasta.gz
+gunzip uniprot_trembl.fasta.gz
+
+diamond makedb --in uniprot_sprot.fasta -d uniprot_sprot
+diamond makedb --in uniprot_trembl.fasta -d uniprot_trembl
+
+diamond blastp -d uniprot_sprot -q proteins.fasta -o diamond_uniprot_results.m8 -p 8 --max-target-seqs 1 --evalue 0.001 --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
+
+
+ diamond blastp -d uniprot_sprot -q ../Documents/alunos/driii/P450/Ipuberulus/ISC_3.singularity.EVM.pep_no_asterisk.fasta -o Ipub_diamond_uniprot_results.m8 -p 8 --max-target-seqs 1 --evalue 0.001 --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
