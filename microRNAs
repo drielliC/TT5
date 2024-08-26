@@ -1,0 +1,27 @@
+###usando INFERNAL 
+cmscan --tblout miRNA_results.tblout --noali --cut_ga Rfam.cm ../genomes_dataseq/ISCPUB_v0.2.h2_scaffolds.yahs_final.fa > miRNA_results.txt
+
+
+_____________________________________________________________________________________________________________________________________
+
+#Anotar microRNAs (miRNAs) envolve várias etapas, desde a identificação das sequências precursoras (pre-miRNAs) até a validação e anotação das sequências maduras de miRNAs. Aqui está um guia passo a passo sobre como você pode realizar a anotação de miRNAs em um genoma.
+#Etapa 1: Preparação dos Dados
+#Dados Genômicos (genome.fasta).
+
+#Passos para Baixar o miRBase Localmente
+
+#miRNAs_Maduros
+wget ftp://mirbase.org/pub/mirbase/CURRENT/mature.fa.gz
+
+#Precursores_Pre_miRNAs
+wget ftp://mirbase.org/pub/mirbase/CURRENT/hairpin.fa.gz
+
+gunzip mature.fa.gz
+gunzip hairpin.fa.gz
+
+ blastn -query predicted_mirnas.fasta -db miRBase.fasta -out blast_results.txt -evalue 1e-5 -outfmt 6
+
+
+____________________________________________________
+
+  #miRDeep2 no galaxy 
