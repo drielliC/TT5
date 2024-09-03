@@ -4,6 +4,15 @@ sudo apt-get install trimal
 #ou instalar manualmente 
 #https://github.com/inab/trimal/releases
 
+#Alinhar usando o clustaw e o muscle, com CDS e proteina juntos.
+
 #Trimar o Alinhamento  CDS com TrimAl >>> O TrimAl não tem uma opção específica para preservar códons diretamente, mas, como você já alinhou as CDS corretamente via proteínas, o alinhamento CDS já estará estruturado para preservar os códons.
 #Exemplo usando o método automated1, que é uma heurística para a trimagem:
 trimal -in cds_aligned.phy -out cds_trimmed.phy -automated1
+
+#Usar o mesmo arquivo trimado de cds para rodar uma arvore. 
+singularity run ../SIF/iqtree_2.2.2.3--h2202e69_2.sif
+#run command
+iqtree -s trimAI_fromCDS_toAAC_muscle_56seqs_2439sidios_CYP86.fas -B 10000 -T 2 --nmax 15000
+
+melhor modelo: 
