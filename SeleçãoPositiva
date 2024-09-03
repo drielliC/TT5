@@ -1,0 +1,9 @@
+sudo apt-get update
+sudo apt-get install trimal
+
+#ou instalar manualmente 
+#https://github.com/inab/trimal/releases
+
+#Trimar o Alinhamento  CDS com TrimAl >>> O TrimAl não tem uma opção específica para preservar códons diretamente, mas, como você já alinhou as CDS corretamente via proteínas, o alinhamento CDS já estará estruturado para preservar os códons.
+#Exemplo usando o método automated1, que é uma heurística para a trimagem:
+trimal -in cds_aligned.phy -out cds_trimmed.phy -automated1
