@@ -4,99 +4,83 @@ sudo apt-get install trimal
 #ou instalar manualmente 
 #https://github.com/inab/trimal/releases
 
-#Alinhar usando o clustaw e o muscle, com CDS e proteina juntos.
+#Alinhar usando o MUSCLE, com CDS e PROTEINA juntos. (OBS:o clustaw não funciona)
+
+##############################
+#Script que trima dados faltantes de cds preservando os codons
+nano  cut_codon.py
+
+import sys
+from Bio import AlignIO
+
+def trim_alignment(input_fasta, output_fasta, threshold_percentage):
+    # Calcular o threshold a partir da porcentagem
+    threshold = threshold_percentage / 100.0
+    
+    # Carregar o alinhamento
+    alignment = AlignIO.read(input_fasta, "fasta")
+    
+    # Calcular o número de sequências
+    num_sequences = len(alignment)
+    
+    # Inicializar uma lista para marcar quais colunas devem ser mantidas
+    columns_to_keep = []
+    
+    # Percorrer as colunas em blocos de códons (trios de nucleotídeos)
+    for i in range(0, alignment.get_alignment_length(), 3):
+        codon_columns = alignment[:, i:i+3]
+        
+        # Contar quantas sequências têm gaps ou caracteres faltantes no bloco de códons
+        missing_count = sum(1 for codon in codon_columns if '-' in codon or '?' in codon)
+        
+        # Verificar se o bloco deve ser mantido (menos de threshold% de dados faltantes)
+        if missing_count / num_sequences <= threshold:
+            columns_to_keep.append(i)  # Marcar a posição inicial do códon
+    
+    # Para cada sequência, construir a nova sequência com as colunas a serem mantidas
+    trimmed_sequences = []
+    for record in alignment:
+        new_seq = ''
+        for i in columns_to_keep:
+            new_seq += record.seq[i:i+3]  # Adiciona o bloco de 3 colunas
+        trimmed_sequences.append((record.id, new_seq))
+    
+    # Escrever o novo arquivo FASTA
+    with open(output_fasta, 'w') as output_file:
+        for record_id, sequence in trimmed_sequences:
+            output_file.write(f">{record_id}\n")
+            output_file.write(str(sequence) + "\n")
+
+if __name__ == "__main__":
+    # Verificar se os argumentos foram passados corretamente
+    if len(sys.argv) != 4:
+        print("Uso: python cut_codon.py <percentual_de_dados_faltantes> <arquivo_de_entrada.fasta> <arquivo_de_saida.fasta>")
+        sys.exit(1)
+    
+    # Ler os argumentos
+    threshold_percentage = float(sys.argv[1].replace('%', ''))  # Remover o '%' e converter para float
+    input_fasta = sys.argv[2]
+    output_fasta = sys.argv[3]
+    
+    # Executar a função de trimming
+    trim_alignment(input_fasta, output_fasta, threshold_percentage)
+
+##########################################################################
+Mudanças feitas:
+
+    Agora, usamos record.seq[i:i+3] para pegar o bloco de códons da sequência correspondente a uma sequência específica.
+    A lista columns_to_keep guarda a posição inicial de cada bloco de códons que será mantido.
+    A construção da sequência final para cada gene é feita concatenando apenas os blocos que foram marcados como válidos.
+
+#USAGE
+python3 cut_codon.py 20 muscle_56seqs_CYP86_cds.fas trimmed20_muscle_56seqs_CYP86_cds.fas
+diminuindo o valor diminui os dados faltantes aumenta o corte
+###########################
+SELEÇÃO NO EASYCODEML  interface gráfica 
 
 #download easycodeml
 https://github.com/BioEasy/EasyCodeML
 #pra rodar 
 cd ~/Downloads/EasyCodeML
 java -jar EasyCodeML.jar
-
-
-
-##############################
-#Script que trima 70% dos dados faltantes de cds preservando os codons
-
-pip install biopython pandas
-from Bio import AlignIO
-import pandas as pd
-import numpy as np
-
-def remove_gap_sites(fasta_file, output_file, gap_threshold=0.7):
-    # Carregar o alinhamento em formato FASTA
-    alignment = AlignIO.read(fasta_file, "fasta")
-    
-    # Número de sequências e comprimento do alinhamento
-    num_sequences = len(alignment)
-    alignment_length = len(alignment[0].seq)
-
-    # Convertendo o alinhamento para uma matriz de caracteres
-    alignment_matrix = np.array([list(rec.seq) for rec in alignment], dtype=str)
-
-    # Identificar sítios de códons a serem removidos
-    codon_positions_to_keep = []
-    
-    # Percorrer as posições em blocos de 3 (códons)
-    for i in range(0, alignment_length, 3):
-        codon_block = alignment_matrix[:, i:i+3]
-        gap_counts = (codon_block == '-').sum(axis=1)
-        
-        # Calcula a porcentagem de gaps em todo o bloco de códons
-        percentage_gaps = np.mean(gap_counts > 0)
-
-        # Se menos de 70% do bloco de códons tiver gaps, mantemos
-        if percentage_gaps <= gap_threshold:
-            codon_positions_to_keep.append((i, i+3))
-
-    # Criar a nova sequência com os sítios preservados
-    trimmed_alignment = []
-    
-    for record in alignment:
-        new_seq = []
-        for start, end in codon_positions_to_keep:
-            new_seq.append(str(record.seq[start:end]))
-        trimmed_alignment.append("".join(new_seq))
-
-    # Escrever o alinhamento trimado no arquivo de saída
-    with open(output_file, "w") as f_out:
-        for i, record in enumerate(alignment):
-            f_out.write(f">{record.id}\n")
-            f_out.write(f"{trimmed_alignment[i]}\n")
-
-    print(f"Alinhamento trimado salvo em {output_file}")
-
-# Exemplo de uso
-fasta_file = "aligned_sequences.fasta"
-output_file = "trimmed_alignment.fasta"
-remove_gap_sites(fasta_file, output_file, gap_threshold=0.7)
-
-
-########################################################################
-Explicação do Script:
-
-    Leitura do Alinhamento: O script usa o Biopython para ler o arquivo de alinhamento em formato FASTA.
-
-    Matriz de Alinhamento: As sequências são convertidas em uma matriz de caracteres, onde cada linha corresponde a uma sequência e cada coluna a uma posição no alinhamento.
-
-    Percorrendo por Códons: O script percorre o alinhamento em blocos de três nucleotídeos (um códon), verificando a proporção de gaps em cada códon.
-
-    Remoção de Códons com Gaps: Se mais de 70% das sequências em um bloco de códons tiverem gaps, esse bloco é removido. Caso contrário, ele é preservado.
-
-    Salvando o Alinhamento: As sequências são reconstruídas, removendo os blocos de códons com excesso de gaps, e salvas em um novo arquivo FASTA.
-
-Parâmetros:
-
-    fasta_file: Arquivo de alinhamento de entrada no formato FASTA.
-    output_file: Arquivo de saída onde o alinhamento trimado será salvo.
-    gap_threshold: Percentual de gaps permitido antes de remover um códon. No exemplo, é 70% (0.7), mas você pode ajustar esse valor conforme necessário.
-
-Exemplo de uso:
-
-Se você tiver um arquivo de alinhamento chamado aligned_sequences.fasta, basta rodar o script da seguinte forma:
-
-bash
-
-python script_name.py
-
-O alinhamento trimado será salvo em trimmed_alignment.fasta.
 
