@@ -70,3 +70,33 @@ fasta_file = "aligned_sequences.fasta"
 output_file = "trimmed_alignment.fasta"
 remove_gap_sites(fasta_file, output_file, gap_threshold=0.7)
 
+
+########################################################################
+Explicação do Script:
+
+    Leitura do Alinhamento: O script usa o Biopython para ler o arquivo de alinhamento em formato FASTA.
+
+    Matriz de Alinhamento: As sequências são convertidas em uma matriz de caracteres, onde cada linha corresponde a uma sequência e cada coluna a uma posição no alinhamento.
+
+    Percorrendo por Códons: O script percorre o alinhamento em blocos de três nucleotídeos (um códon), verificando a proporção de gaps em cada códon.
+
+    Remoção de Códons com Gaps: Se mais de 70% das sequências em um bloco de códons tiverem gaps, esse bloco é removido. Caso contrário, ele é preservado.
+
+    Salvando o Alinhamento: As sequências são reconstruídas, removendo os blocos de códons com excesso de gaps, e salvas em um novo arquivo FASTA.
+
+Parâmetros:
+
+    fasta_file: Arquivo de alinhamento de entrada no formato FASTA.
+    output_file: Arquivo de saída onde o alinhamento trimado será salvo.
+    gap_threshold: Percentual de gaps permitido antes de remover um códon. No exemplo, é 70% (0.7), mas você pode ajustar esse valor conforme necessário.
+
+Exemplo de uso:
+
+Se você tiver um arquivo de alinhamento chamado aligned_sequences.fasta, basta rodar o script da seguinte forma:
+
+bash
+
+python script_name.py
+
+O alinhamento trimado será salvo em trimmed_alignment.fasta.
+
