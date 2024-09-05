@@ -6,20 +6,67 @@ sudo apt-get install trimal
 
 #Alinhar usando o clustaw e o muscle, com CDS e proteina juntos.
 
-#Trimar o Alinhamento  CDS com TrimAl >>> O TrimAl não tem uma opção específica para preservar códons diretamente, mas, como você já alinhou as CDS corretamente via proteínas, o alinhamento CDS já estará estruturado para preservar os códons.
-#Exemplo usando o método automated1, que é uma heurística para a trimagem:
-trimal -in cds_aligned.phy -out cds_trimmed.phy -automated1
-
-#Usar o mesmo arquivo trimado de cds para rodar uma arvore. 
-singularity run ../SIF/iqtree_2.2.2.3--h2202e69_2.sif
-#run command
-iqtree -s trimAI_fromCDS_toAAC_muscle_56seqs_2439sidios_CYP86.fas -B 10000 -T 2 --nmax 15000
-
-melhor modelo: 
-
-
 #download easycodeml
 https://github.com/BioEasy/EasyCodeML
 #pra rodar 
 cd ~/Downloads/EasyCodeML
 java -jar EasyCodeML.jar
+
+
+
+##############################
+#Script que trima 70% dos dados faltantes de cds preservando os codons
+
+pip install biopython pandas
+from Bio import AlignIO
+import pandas as pd
+import numpy as np
+
+def remove_gap_sites(fasta_file, output_file, gap_threshold=0.7):
+    # Carregar o alinhamento em formato FASTA
+    alignment = AlignIO.read(fasta_file, "fasta")
+    
+    # Número de sequências e comprimento do alinhamento
+    num_sequences = len(alignment)
+    alignment_length = len(alignment[0].seq)
+
+    # Convertendo o alinhamento para uma matriz de caracteres
+    alignment_matrix = np.array([list(rec.seq) for rec in alignment], dtype=str)
+
+    # Identificar sítios de códons a serem removidos
+    codon_positions_to_keep = []
+    
+    # Percorrer as posições em blocos de 3 (códons)
+    for i in range(0, alignment_length, 3):
+        codon_block = alignment_matrix[:, i:i+3]
+        gap_counts = (codon_block == '-').sum(axis=1)
+        
+        # Calcula a porcentagem de gaps em todo o bloco de códons
+        percentage_gaps = np.mean(gap_counts > 0)
+
+        # Se menos de 70% do bloco de códons tiver gaps, mantemos
+        if percentage_gaps <= gap_threshold:
+            codon_positions_to_keep.append((i, i+3))
+
+    # Criar a nova sequência com os sítios preservados
+    trimmed_alignment = []
+    
+    for record in alignment:
+        new_seq = []
+        for start, end in codon_positions_to_keep:
+            new_seq.append(str(record.seq[start:end]))
+        trimmed_alignment.append("".join(new_seq))
+
+    # Escrever o alinhamento trimado no arquivo de saída
+    with open(output_file, "w") as f_out:
+        for i, record in enumerate(alignment):
+            f_out.write(f">{record.id}\n")
+            f_out.write(f"{trimmed_alignment[i]}\n")
+
+    print(f"Alinhamento trimado salvo em {output_file}")
+
+# Exemplo de uso
+fasta_file = "aligned_sequences.fasta"
+output_file = "trimmed_alignment.fasta"
+remove_gap_sites(fasta_file, output_file, gap_threshold=0.7)
+
