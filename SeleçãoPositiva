@@ -16,3 +16,10 @@ singularity run ../SIF/iqtree_2.2.2.3--h2202e69_2.sif
 iqtree -s trimAI_fromCDS_toAAC_muscle_56seqs_2439sidios_CYP86.fas -B 10000 -T 2 --nmax 15000
 
 melhor modelo: 
+
+
+#download easycodeml
+https://github.com/BioEasy/EasyCodeML
+#pra rodar 
+cd ~/Downloads/EasyCodeML
+java -jar EasyCodeML.jar
