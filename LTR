@@ -1,0 +1,47 @@
+wget https://sourceforge.net/projects/ltr-finder/files/LTR_FINDER_v1.07.tar.gz
+tar -zxvf LTR_FINDER_v1.07.tar.gz
+cd LTR_FINDER_v1.07
+make
+cd build
+ls
+./build.sh
+# ou
+./configure
+cd ../source
+ls
+echo "export PATH=\$PATH:$PWD" >> ~/.bashrc
+source ~/.bashrc
+./ltr_finder genome_file.fasta > ltr_results.txt
+perl genome_plot.pl ltr_results.txt > genome_ltr_figure.svg
+
+./ltr_finder genome_file.fasta -D 15000 -d 1000 -C > ltr_results.txt
+-w: Exibe a pontuação dos hits de LTR.
+-f /dev/stderr: Envia a saída do log para o stderr (erro padrão).
+-D e -d: Especificam a distância máxima e mínima entre LTRs.
+-C: Ativa a busca por cauda poli-A/T.
+
+
+LTRharvest:
+wget https://github.com/genometools/genometools/archive/refs/tags/v1.6.2.tar.gz
+tar -zxvf v1.6.2.tar.gz
+cd genometools-1.6.2
+make 64bit=yes
+echo "export PATH=\$PATH:$PWD/bin" >> ~/.bashrc
+source ~/.bashrc
+gt suffixerator -db genome_file.fasta -indexname genome_index -tis -suf -lcp -des -ssp -sds -dna
+gt ltrharvest -index genome_index -minlenltr 100 -maxlenltr 5000 -mintsd 4 -maxtsd 20 > ltrharvest_results.txt
+Onde:
+
+genome_index: O índice criado com o suffixerator.
+minlenltr: O comprimento mínimo das LTRs.
+maxlenltr: O comprimento máximo das LTRs.
+mintsd e maxtsd: Os comprimentos mínimo e máximo de TSDS (Target Site Duplications).
+
+
+
+
+
+
+
+
+
