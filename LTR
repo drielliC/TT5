@@ -110,7 +110,42 @@ Copiar código
 ./ltr_finder genome_file.fasta > ltrfinder_output.txt
 Rodar o LTR_retriever:
 
+########################################################
 Uma vez que você tenha o arquivo de saída das ferramentas de detecção, use o LTR_retriever para refinar os resultados:
+# Baixe o LTR_retriever
+git clone https://github.com/oushujun/LTR_retriever.git
+
+# Vá para o diretório do LTR_retriever
+cd LTR_retriever
+
+# Dê permissão de execução para o script principal
+chmod +x LTR_retriever
+
+# Adicione o LTR_retriever ao seu PATH para facilitar o uso
+export PATH=$PATH:/caminho/para/LTR_retriever
+
+# Download the latest version of RepeatModeler
+wget http://www.repeatmasker.org/RepeatModeler/RepeatModeler-2.0.tar.gz
+
+# Extract the downloaded file
+tar -xvzf RepeatModeler-2.0.tar.gz
+
+# Move to the RepeatModeler directory
+cd RepeatModeler-2.0/
+
+Preparação do Índice do Genoma:
+
+    O LTR_retriever requer um índice do genoma gerado por uma ferramenta como o RepeatMasker ou RepeatModeler.
+
+Exemplo de Índice de Genoma com RepeatModeler:
+
+# Suponha que seu genoma esteja no arquivo "genome.fasta"
+# Crie um banco de dados para o RepeatModeler
+BuildDatabase -name genome_db genome.fasta
+
+# Execute o RepeatModeler para criar um índice de repetição
+RepeatModeler -database genome_db
+
 
 bash
 Copiar código
@@ -131,6 +166,109 @@ LTR_retriever.results.gff3: Arquivo com as anotações refinadas.
 LTR_retriever.summary: Um resumo com detalhes sobre o número de LTRs identificados e outros dados.
 
 
+
+#######################################################################################################################################################################
+import pandas as pd
+
+# Função para processar o arquivo LTR Finder
+def process_ltr_finder(file_path):
+    with open(file_path, 'r') as f:
+        data = []
+        scaffold = None
+        start, end = None, None
+        for line in f:
+            if line.startswith('>Sequence:'):
+                scaffold = line.split()[1]
+            if line.startswith('Location :'):
+                start, end = map(int, line.split()[2:5:2])  # Extrair início e fim
+                data.append((scaffold, start, end))
+    return pd.DataFrame(data, columns=['scaffold', 'start', 'end'])
+
+# Função para processar o arquivo LTR Harvest, lidando com linhas inconsistentes
+def process_ltr_harvest(file_path):
+    data = []
+    with open(file_path, 'r') as f:
+        for line in f:
+            # Ignorar linhas de cabeçalho ou comentários
+            if line.startswith('#'):
+                continue
+            # Dividir a linha em colunas, mas ignorar se o número de colunas estiver incorreto
+            columns = line.split()
+            if len(columns) == 11:  # Esperamos 11 colunas
+                data.append(columns)
+            else:
+                print(f"Linha ignorada devido ao número inesperado de colunas: {line.strip()}")
+    # Converter para DataFrame
+    return pd.DataFrame(data, columns=['start', 'end', 'l(ret)', 'start_lLTR', 'end_lLTR', 'l(lLTR)', 'start_rLTR', 'end_rLTR', 'l(rLTR)', 'similarity', 'seq_nr'])
+
+# Carregar os arquivos e processar
+ltr_finder_data = process_ltr_finder('LTR_ISC_results.txt')
+ltr_harvest_data = process_ltr_harvest('ltrharvest_results.txt')
+
+# Converter as colunas 'start' e 'end' para int64 em ambos os DataFrames
+ltr_finder_data['start'] = ltr_finder_data['start'].astype('int64')
+ltr_finder_data['end'] = ltr_finder_data['end'].astype('int64')
+
+ltr_harvest_data['start'] = ltr_harvest_data['start'].astype('int64')
+ltr_harvest_data['end'] = ltr_harvest_data['end'].astype('int64')
+
+# Combinar os dados
+combined_ltrs = pd.merge(ltr_finder_data, ltr_harvest_data, left_on=['start', 'end'], right_on=['start', 'end'], how='outer', indicator=True)
+
+# Exibir resultados
+print(f"Elementos LTR preditos por ambas as ferramentas: {combined_ltrs[combined_ltrs['_merge'] == 'both'].shape[0]}")
+print(f"Elementos LTR preditos apenas pelo LTR Finder: {combined_ltrs[combined_ltrs['_merge'] == 'left_only'].shape[0]}")
+print(f"Elementos LTR preditos apenas pelo LTR Harvest: {combined_ltrs[combined_ltrs['_merge'] == 'right_only'].shape[0]}")
+
+# Salvar os resultados combinados em um arquivo CSV
+combined_ltrs.to_csv('combined_ltr_predictions.csv', index=False)
+
+###########################################################
+import pandas as pd
+import sys
+
+def calculate_ltr_percentage(csv_file, total_genome_size):
+    """Calcula a porcentagem de LTR no genoma com base nas predições de LTR em um arquivo CSV."""
+    
+    # Carregar o arquivo CSV
+    df = pd.read_csv(csv_file)
+
+    # Verificar se as colunas 'start' e 'end' existem e filtrar linhas válidas
+    if 'start' not in df.columns or 'end' not in df.columns:
+        print("Erro: O arquivo CSV deve conter as colunas 'start' e 'end'.")
+        sys.exit(1)
+
+    # Filtrar linhas onde 'start' e 'end' não são valores nulos
+    df = df.dropna(subset=['start', 'end'])
+
+    # Converter as colunas 'start' e 'end' para inteiros (caso estejam como string/float)
+    df['start'] = df['start'].astype(int)
+    df['end'] = df['end'].astype(int)
+
+    # Calcular o tamanho total das regiões LTR
+    df['LTR_size'] = df['end'] - df['start'] + 1
+    total_ltr_size = df['LTR_size'].sum()
+
+    # Calcular a porcentagem de LTR no genoma
+    ltr_percentage = (total_ltr_size / total_genome_size) * 100
+
+    return total_ltr_size, ltr_percentage
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Uso: python ltr_percentage.py <arquivo_csv> <tamanho_total_genoma>")
+        sys.exit(1)
+
+    csv_file = sys.argv[1]
+    total_genome_size = int(sys.argv[2])
+
+    # Calcular a porcentagem de LTR
+    total_ltr_size, ltr_percentage = calculate_ltr_percentage(csv_file, total_genome_size)
+
+    # Exibir os resultados
+    print(f"Tamanho total de LTRs preditas: {total_ltr_size} bases")
+    print(f"Tamanho total do genoma: {total_genome_size} bases")
+    print(f"Porcentagem de LTRs no genoma: {ltr_percentage:.2f}%")
 
 
 
