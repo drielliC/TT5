@@ -1,0 +1,40 @@
+cd database
+conda create -n repeatmasker_env
+conda activate repeatmasker_env
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+conda install -c bioconda repeatmasker
+RepeatMasker
+
+Parece que o caminho para o seu RepeatMasker é:
+
+bash
+
+/home/andreiat/database/RepeatMasker
+
+Você pode utilizar esse caminho quando precisar configurar o RepeatMasker ou fazer referência ao seu diretório. Por exemplo, para configurar o RepeatMasker, você pode usar o seguinte comando:
+
+bash
+
+perl /home/andreiat/database/RepeatMasker/configure
+
+
+
+
+############################################
+1. Ativar o ambiente conda
+
+Após ligar o computador, você precisa ativar o ambiente conda em que o RepeatMasker foi instalado. O ambiente que você criou foi chamado de repeatmasker_env. Para ativá-lo, use o seguinte comando:
+
+bash
+
+conda activate repeatmasker_env
+
+2. Verificar o RepeatMasker
+
+Depois de ativar o ambiente, verifique se o RepeatMasker está funcionando corretamente:
+
+bash
+
+RepeatMasker
