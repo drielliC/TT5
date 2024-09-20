@@ -1,3 +1,4 @@
+###############LTR FINDER##############################################
 wget https://sourceforge.net/projects/ltr-finder/files/LTR_FINDER_v1.07.tar.gz
 tar -zxvf LTR_FINDER_v1.07.tar.gz
 cd LTR_FINDER_v1.07
@@ -21,119 +22,69 @@ perl genome_plot.pl ltr_results.txt > genome_ltr_figure.svg
 -C: Ativa a busca por cauda poli-A/T.
 
 
-LTRharvest:
+###############LTRharvest##############################################
 wget https://github.com/genometools/genometools/archive/refs/tags/v1.6.2.tar.gz
 tar -zxvf v1.6.2.tar.gz
 cd genometools-1.6.2
 make 64bit=yes
 echo "export PATH=\$PATH:$PWD/bin" >> ~/.bashrc
 source ~/.bashrc
+
+ou 
+wget https://github.com/oushujun/LTR_retriever/archive/refs/heads/master.zip
+unzip master.zip
+cd LTR_retriever-master
+sudo apt-get install parallel bedtools ncbi-blast+ ltr_finder
+
+ou
+wget https://github.com/genometools/genometools/archive/refs/tags/v1.6.2.tar.gz
+tar -zxvf v1.6.2.tar.gz
+cd genometools-1.6.2
+make 64bit=yes
+echo "export PATH=\$PATH:$PWD" >> ~/.bashrc
+source ~/.bashrc
+
+#USAGE
 gt suffixerator -db genome_file.fasta -indexname genome_index -tis -suf -lcp -des -ssp -sds -dna
 gt ltrharvest -index genome_index -minlenltr 100 -maxlenltr 5000 -mintsd 4 -maxtsd 20 > ltrharvest_results.txt
-Onde:
 
+Onde:
 genome_index: O índice criado com o suffixerator.
 minlenltr: O comprimento mínimo das LTRs.
 maxlenltr: O comprimento máximo das LTRs.
 mintsd e maxtsd: Os comprimentos mínimo e máximo de TSDS (Target Site Duplications).
 
 
+############### LTR_retriever##############################################
+1. Download Miniconda Installer Linux:
 
-Passos para baixar e instalar o LTR_retriever:
-Baixar o LTR_retriever:
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
-Você pode baixar o LTR_retriever diretamente do GitHub:
+2. Install Miniconda
 
-bash
-Copiar código
-wget https://github.com/oushujun/LTR_retriever/archive/refs/heads/master.zip
-Descompactar o arquivo:
+chmod +x Miniconda3-latest-Linux-x86_64.sh
+./Miniconda3-latest-Linux-x86_64.sh
 
-Após o download, descompacte o arquivo .zip:
+ #Follow the instructions during the installation process. You will need to agree to the license agreement and choose the installation path. It's usually fine to accept the default options.
+    At the end of the installation, you’ll be prompted to initialize Miniconda and set up the Conda environment. You can allow this by typing yes.
 
-bash
-Copiar código
-unzip master.zip
-Navegue até o diretório descompactado:
+3. Activate Conda
 
-bash
-Copiar código
-cd LTR_retriever-master
-Instalar dependências:
-
-O LTR_retriever requer algumas ferramentas adicionais para funcionar corretamente:
-
-GNU parallel: Para rodar tarefas em paralelo.
-BEDTools: Para manipulação de dados de intervalos genômicos.
-BLAST+: Para comparar sequências.
-LTR_FINDER ou LTRharvest: Para gerar as predições brutas de LTRs.
-Instale as dependências com os seguintes comandos (para sistemas baseados em Debian/Ubuntu):
-
-bash
-Copiar código
-sudo apt-get install parallel bedtools ncbi-blast+ ltr_finder
-Se precisar do LTRharvest, ele faz parte do GenomeTools:
-
-bash
-Copiar código
-wget https://github.com/genometools/genometools/archive/refs/tags/v1.6.2.tar.gz
-tar -zxvf v1.6.2.tar.gz
-cd genometools-1.6.2
-make 64bit=yes
-Você também pode configurar o LTRharvest seguindo o guia anterior.
-
-Adicionar o LTR_retriever ao seu $PATH:
-
-Para facilitar a execução do LTR_retriever de qualquer lugar, adicione-o ao seu $PATH:
-
-bash
-Copiar código
-echo "export PATH=\$PATH:$PWD" >> ~/.bashrc
 source ~/.bashrc
-Como usar o LTR_retriever:
-Depois de ter o LTRharvest ou LTR_FINDER configurado e ter gerado as predições LTR, você pode usar o LTR_retriever para refiná-las.
+source ~/.zshrc
+conda activate
+conda --version
 
-Gerar as predições brutas de LTRs:
+conda install -c bioconda ltr_retriever
+conda install -c bioconda perl-text-soundex
 
-Primeiro, rode o LTRharvest ou LTR_FINDER para gerar os resultados brutos.
+conda config --add channels conda-forge
+conda config --add channels bioconda
+conda config --set channel_priority strict
+conda install perl-text-soundex ltr_retriever
 
-Com o LTRharvest:
 
-bash
-Copiar código
-gt suffixerator -db genome_file.fasta -indexname genome_index -tis -suf -lcp -des -ssp -sds -dna
-gt ltrharvest -index genome_index -minlenltr 100 -maxlenltr 5000 -mintsd 4 -maxtsd 20 > ltrharvest_output.txt
-Ou com o LTR_FINDER:
-
-bash
-Copiar código
-./ltr_finder genome_file.fasta > ltrfinder_output.txt
-Rodar o LTR_retriever:
-
-########################################################
-Uma vez que você tenha o arquivo de saída das ferramentas de detecção, use o LTR_retriever para refinar os resultados:
-# Baixe o LTR_retriever
-git clone https://github.com/oushujun/LTR_retriever.git
-
-# Vá para o diretório do LTR_retriever
-cd LTR_retriever
-
-# Dê permissão de execução para o script principal
-chmod +x LTR_retriever
-
-# Adicione o LTR_retriever ao seu PATH para facilitar o uso
-export PATH=$PATH:/caminho/para/LTR_retriever
-
-# Download the latest version of RepeatModeler
-wget http://www.repeatmasker.org/RepeatModeler/RepeatModeler-2.0.tar.gz
-
-# Extract the downloaded file
-tar -xvzf RepeatModeler-2.0.tar.gz
-
-# Move to the RepeatModeler directory
-cd RepeatModeler-2.0/
-
-Preparação do Índice do Genoma:
+4. Preparação do Índice do Genoma:
 
     O LTR_retriever requer um índice do genoma gerado por uma ferramenta como o RepeatMasker ou RepeatModeler.
 
@@ -141,31 +92,18 @@ Exemplo de Índice de Genoma com RepeatModeler:
 
 # Suponha que seu genoma esteja no arquivo "genome.fasta"
 # Crie um banco de dados para o RepeatModeler
+conda install -c bioconda repeatmasker rmblast ncbi-blast trf
+conda install -c bioconda repeatmodeler
+
 BuildDatabase -name genome_db genome.fasta
 
 # Execute o RepeatModeler para criar um índice de repetição
 RepeatModeler -database genome_db
 
+LTR_retriever -genome genome.fa -inharvest LTRharvest_results.out -infinder LTR_FINDER_results.out -threads 4
 
-bash
-Copiar código
-LTR_retriever -genome genome_file.fasta -inharvest ltrharvest_output.txt -threads 4
-Ou para o LTR_FINDER:
-
-bash
-Copiar código
-LTR_retriever -genome genome_file.fasta -infinder ltrfinder_output.txt -threads 4
-Aqui, -threads 4 especifica o uso de 4 threads para acelerar a análise.
-
-Analisar os resultados:
-
-O LTR_retriever gera um conjunto refinado de anotações LTR no formato GFF3 e outras saídas que incluem detalhes sobre a idade dos elementos e uma classificação mais precisa.
-
-Saída do LTR_retriever:
 LTR_retriever.results.gff3: Arquivo com as anotações refinadas.
 LTR_retriever.summary: Um resumo com detalhes sobre o número de LTRs identificados e outros dados.
-
-
 
 #######################################################################################################################################################################
 import pandas as pd
