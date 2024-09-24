@@ -1,0 +1,30 @@
+from Bio import SeqIO
+
+def calculate_scaffold_sizes(fasta_file):
+    scaffold_sizes = {}
+    
+    # Lê o arquivo FASTA e calcula o tamanho de cada scaffold
+    for record in SeqIO.parse(fasta_file, "fasta"):
+        scaffold_name = record.id
+        scaffold_length = len(record.seq)
+        scaffold_sizes[scaffold_name] = scaffold_length
+    
+    return scaffold_sizes
+
+def write_scaffold_sizes_to_file(scaffold_sizes, output_file):
+    with open(output_file, "w") as f:
+        f.write("Scaffold\tSize\n")
+        for scaffold, size in scaffold_sizes.items():
+            f.write(f"{scaffold}\t{size}\n")
+
+# Defina o caminho para o arquivo FASTA do genoma
+fasta_file = "genome_scaffolds.fasta"
+output_file = "scaffold_sizes.txt"
+
+# Calcula os tamanhos dos scaffolds
+scaffold_sizes = calculate_scaffold_sizes(fasta_file)
+
+# Escreve os tamanhos dos scaffolds em um arquivo de saída
+write_scaffold_sizes_to_file(scaffold_sizes, output_file)
+
+print(f"Tamanhos dos scaffolds calculados e salvos em {output_file}")
