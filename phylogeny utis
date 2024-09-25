@@ -1,5 +1,6 @@
 #Checa nos seus IDS quais estão no arquivo e quais não estão
-
+#resultado Total de genes ausentes no FASTA: 263 | Total de genes extras no FASTA: 160 | Resultado salvo em missing_genes.txt
+#usage python3 fasta_check.py
 
 from Bio import SeqIO
 
