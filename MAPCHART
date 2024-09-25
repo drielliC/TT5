@@ -28,3 +28,40 @@ scaffold_sizes = calculate_scaffold_sizes(fasta_file)
 write_scaffold_sizes_to_file(scaffold_sizes, output_file)
 
 print(f"Tamanhos dos scaffolds calculados e salvos em {output_file}")
+______________________________________________________________________
+MapChart
+OBS: entrar arquivo em ordem crescente de localização no scaffold ou chromossomo, se não não funciona
+OBS: os nomes tem que ser exatamente iguais, só muda a localização 
+OBS: "Chrom 1" não tem espaço, o resto tem tab, fazer no excel. 
+
+
+Chrom 1	
+Start	0
+CYP1.257	11793635
+CYP1.813	16964966
+CYP1.915	17601688
+CYP1.1561	21987207
+CYP1.1562	21991099
+End	29601323
+	
+Chrom 2	
+Start	0
+CYP1a.728	4478190
+CYP1a.997	5985854
+CYP1a.1517	10093721
+CYP1a.2060	24805837
+CYP1a.2175	25797908
+CYP1a.2334	26947222
+CYP1a.2556	28250439
+CYP1a.2705	29186868
+End	29807836
+	
+Chrom 3	
+Start	0
+CYP1b.223	1231824
+CYP1b.236	1301691
+CYP1b.944	6709465
+CYP1b.967	6984331
+CYP1b.1696	24266805
+CYP1b.1753	24647646
+End	26295828
