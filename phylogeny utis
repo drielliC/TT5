@@ -14,12 +14,21 @@ def check_missing_genes(fasta_file, gene_ids_file, output_file):
     # Identificar genes que estão no .txt mas não no FASTA
     missing_genes = gene_ids - fasta_ids
 
-    # Escrever genes ausentes no arquivo de saída
+    # Identificar genes que estão no FASTA mas não no .txt
+    extra_genes = fasta_ids - gene_ids
+
+    # Escrever genes ausentes e extras no arquivo de saída
     with open(output_file, 'w') as f:
+        f.write("Genes no .txt mas ausentes no FASTA:\n")
         for gene in missing_genes:
+            f.write(f"{gene}\n")
+        
+        f.write("\nGenes no FASTA mas ausentes no .txt:\n")
+        for gene in extra_genes:
             f.write(f"{gene}\n")
 
     print(f"Total de genes ausentes no FASTA: {len(missing_genes)}")
+    print(f"Total de genes extras no FASTA: {len(extra_genes)}")
     print(f"Resultado salvo em {output_file}")
 
 # Exemplo de uso
