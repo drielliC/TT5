@@ -33,7 +33,7 @@ MapChart
 OBS: entrar arquivo em ordem crescente de localização no scaffold ou chromossomo, se não não funciona
 OBS: os nomes tem que ser exatamente iguais, só muda a localização 
 OBS: "Chrom 1" não tem espaço, o resto tem tab, fazer no excel. 
-
+CONFIG:
 
 Chrom 1	
 Start	0
