@@ -1,0 +1,37 @@
+tutorial EDTA: Extensive De Novo TE Annotator
+by Driellic
+___________________________________
+Sequences derived from TEs (both intact elements and TE fragments) 
+Classification: Wicker et al.2007. This system includes hierarchical
+levels of class, subclass, order, superfamily, family, and subfamily
+and uses three-letter codes to denote the class-order-superfamily of
+a TE. 
+
+
+___________________________________
+#Installation
+#EDTA uses a variety of libraries such as biopython, pandas, glob, scikit-learn, tensorflow, and keras for python version. Various dependencies were also implemented in EDTA including CD-HIT, MUSCLE, mdust, and RepeatMasker. These packages and dependencies can be managed by conda. 
+
+conda create -n EDTA
+conda activate EDTA
+conda install -n EDTA -y -c bioconda -c conda-forge edta
+
+#EDTA source code is available at GitHub; clone the EDTA package and initiate it as follows:
+
+git clone https://github.com/oushujun/EDTA
+./EDTA/EDTA.pl
+
+#Docker
+#A docker version of EDTA is available through https://hub.docker.com/r/kapeel/edta. The docker version is automatically updated.
+Users can avoid system and dependency conflicts by using the docker version. Users can install the docker version of EDTA and
+initiate it as follows:
+
+docker pull kapeel/edta
+docker run -v $PWD:/in -w /in kapeel/edta --genome genome.fa
+[other parameters]
+
+#Singularity
+#pull .sif
+singularity exec edta_2.1.0--hdfd78af_1.sif perl /usr/local/bin/EDTA.pl --genome ../../Documents/alunos/driii/dataUNICAMP/yahs.PITSTA_v0.2.coll.final_mod2.chroms.fa --species others --step all --threads 10
+_____________________________________
+Output 
