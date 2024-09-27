@@ -62,3 +62,66 @@ mediate results. The raw TE libraries contain both intact and full-length TEs th
 identified from the genome are reported in both the fasta format and the GFF3 format, which can be used to study the biology of
 TEs. The TE output from the final step is called FastaName.fa.EDTA.TElib.fa and the whole-genome TE annotation is included
 in the file FastaName.fa.EDTA.TEanno.gff3.
+
+_____________________________________
+#Script que contabilizar os tipos de elementos transponíveis (coluna feature), também calcula o tamanho total em pares de bases (bp) ocupados por cada tipo de elemento:
+
+nano stat.py
+
+import pandas as pd
+from Bio import SeqIO
+
+# Função para calcular o tamanho total do genoma a partir de um arquivo FASTA
+def calculate_genome_size(fasta_file):
+    genome_size = 0
+    for record in SeqIO.parse(fasta_file, "fasta"):
+        genome_size += len(record.seq)
+    return genome_size
+
+# Carregar o arquivo GFF3
+gff_file = "seu_arquivo.gff3"  # Substitua pelo nome do seu arquivo
+fasta_file = "seu_arquivo.fasta"  # Substitua pelo nome do seu arquivo FASTA
+columns = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']
+
+# Calcular o tamanho total do genoma lendo o arquivo FASTA
+genome_size = calculate_genome_size(fasta_file)
+print(f"Tamanho total do genoma: {genome_size} bp")
+
+# Ler o arquivo GFF3, ignorando comentários que começam com '#'
+gff_data = pd.read_csv(gff_file, sep='\t', comment='#', names=columns)
+
+# Calcular o tamanho (length) de cada elemento
+gff_data['length'] = gff_data['end'] - gff_data['start'] + 1
+
+# Agrupar por tipo de feature e calcular o número de elementos e o comprimento total (em bp) ocupado
+summary = gff_data.groupby('feature').agg(
+    num_elements=('feature', 'count'),
+    total_length=('length', 'sum')
+).reset_index()
+
+# Calcular a porcentagem do genoma ocupada por cada tipo de elemento
+summary['percent_genome'] = (summary['total_length'] / genome_size) * 100
+
+# Exibir o resumo
+print(summary)
+
+# Exportar para um arquivo CSV se necessário
+summary.to_csv("summary_TE_elements_with_genome_size.csv", index=False)
+
+__________________________________________________
+ python3 stat.py 
+
+Tamanho total do genoma: 328429551 bp
+                         feature  num_elements  total_length  percent_genome
+0           CACTA_TIR_transposon           204        511777        0.155826
+1      Copia_LTR_retrotransposon           376       1923968        0.585808
+2      Gypsy_LTR_retrotransposon           582       4949846        1.507126
+3            LTR_retrotransposon           805       9852624        2.999920
+4         Mutator_TIR_transposon           334        755596        0.230063
+5   PIF_Harbinger_TIR_transposon            41         75693        0.023047
+6     Tc1_Mariner_TIR_transposon            19         43300        0.013184
+7             hAT_TIR_transposon           234        184952        0.056314
+8                       helitron            70        659630        0.200844
+9           long_terminal_repeat          3526       8780942        2.673615
+10                 repeat_region          1763      16744020        5.098207
+11       target_site_duplication          3526         17554        0.005345
