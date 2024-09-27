@@ -6,8 +6,25 @@ Classification: Wicker et al.2007. This system includes hierarchical
 levels of class, subclass, order, superfamily, family, and subfamily
 and uses three-letter codes to denote the class-order-superfamily of
 a TE. 
+ Class I TEs are also called retrotransposons, which rely on an RNA intermediate to transpose;
+Class II TEs are called DNA transposons because they do not use RNA for transposition.
+There are five orders in Class I TEs: LTR-RT, DIRS, PLE, LINE, and SINE; and four orders in Class II TEs: TIR, Helitron, Crypton, and Maverick (Crypton and Maverick are absent in plant genomes).
+The TE superfamily designation indicates related types based on shared characteristics including protein domains, target site specificity (if any), and length of target site duplications.
 
+*Overview*
+The EDTA package is composed of eight published programs. LTRharvest [9], LTR_FINDER_parallel [10], and LTR_retriever [11] are incorporated in this package to identify LTR retrotranspo-sons;
+Generic Repeat Finder [12] and TIR-Learner [13] are included to identify TIR transposons; HelitronScanner [14] identifies Helitron transposons; RepeatModeler [15] is used to identify TEs (such as SINEs and LINEs) missed by the other structure-
+based programs, and finally RepeatMasker (http://repeatmasker.org) is used to annotate fragmented TEs based on homology to structurally annotated TEs.
+Besides combining and filtering the raw output candidates from the base programs, EDTA also features downstream screening that helps to minimize the false discovery rate. 
+Furthermore, EDTA uses TE exemplars identified by the base programs for whole-genome TE annotation as well as evaluation of the annotation
+output.
 
+*Main Concept*
+Intact TEs: Intact TEs refer to elements that retain complete TE structures including terminal repeats and protein domains. Intact TEs are often capable of transposition, but maybe silenced and/or rendered immobile due to epigenetic modification(s) [16]. 
+Full-length TEs: Full-length TEs contain two terminal repeat sequences and subterminal motifs, but their internal sequences may be mutated, deleted, or rearranged. Some full-length TEs are non-autonomous due to lack of the transposase-coding
+function; however, they may be mobilized by transposase provided by autonomous TEs in the same family.
+Fractured TEs: Fractured TEs contain only one terminal fragment of an otherwise complete element. Fractured TEs may be able to transpose by cooperating with another nearby transposon terminus in alternative transposition reactions, if the genome
+also contains an autonomous TE of the same family to provide transposase.
 ___________________________________
 #Installation
 #EDTA uses a variety of libraries such as biopython, pandas, glob, scikit-learn, tensorflow, and keras for python version. Various dependencies were also implemented in EDTA including CD-HIT, MUSCLE, mdust, and RepeatMasker. These packages and dependencies can be managed by conda. 
@@ -32,6 +49,16 @@ docker run -v $PWD:/in -w /in kapeel/edta --genome genome.fa
 
 #Singularity
 #pull .sif
+
+_______________________________
+#Usage:
 singularity exec edta_2.1.0--hdfd78af_1.sif perl /usr/local/bin/EDTA.pl --genome ../../Documents/alunos/driii/dataUNICAMP/yahs.PITSTA_v0.2.coll.final_mod2.chroms.fa --species others --step all --threads 10
+
 _____________________________________
 Output 
+The outputs of raw TEs are located in the working directory in a folder named FastaName.EDTA.raw (FastaName indicates the
+name of the user-defined genome fasta file). The sub-folders are named LTR, TIR, and Helitron and store the corresponding inter-
+mediate results. The raw TE libraries contain both intact and full-length TEs that could be nested in each other. Filtered intact TEs
+identified from the genome are reported in both the fasta format and the GFF3 format, which can be used to study the biology of
+TEs. The TE output from the final step is called FastaName.fa.EDTA.TElib.fa and the whole-genome TE annotation is included
+in the file FastaName.fa.EDTA.TEanno.gff3.
