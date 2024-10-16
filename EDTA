@@ -125,3 +125,7 @@ Tamanho total do genoma: 328429551 bp
 9           long_terminal_repeat          3526       8780942        2.673615
 10                 repeat_region          1763      16744020        5.098207
 11       target_site_duplication          3526         17554        0.005345
+
+
+~/Desktop/SIF$ singularity exec edta_2.1.0--hdfd78af_1.sif perl /usr/local/bin/EDTA.pl --genome ../../Documents/alunos/driii/dataUNICAMP/ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa --threads 5 --sensitive 1 --anno 1 --evaluat
+e 1
