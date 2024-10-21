@@ -52,7 +52,7 @@ docker run -v $PWD:/in -w /in kapeel/edta --genome genome.fa
 
 _______________________________
 #Usage:
-singularity exec edta_2.1.0--hdfd78af_1.sif perl /usr/local/bin/EDTA.pl --genome ../../Documents/alunos/driii/dataUNICAMP/yahs.PITSTA_v0.2.coll.final_mod2.chroms.fa --species others --step all --threads 10
+singularity exec edta_2.1.0--hdfd78af_1.sif perl /usr/local/bin/EDTA.pl --genome ../../Documents/alunos/driii/dataUNICAMP/yahs.PITSTA_v0.2.coll.final_mod2.chroms.fa --species others --step all --threads 10 --sensitive 1 --anno 1 --evaluate 1
 
 _____________________________________
 Output 
