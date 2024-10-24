@@ -129,3 +129,7 @@ Tamanho total do genoma: 328429551 bp
 
 ~/Desktop/SIF$ singularity exec edta_2.1.0--hdfd78af_1.sif perl /usr/local/bin/EDTA.pl --genome ../../Documents/alunos/driii/dataUNICAMP/ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa --threads 5 --sensitive 1 --anno 1 --evaluat
 e 1
+
+
+############################TEsorter#########################################################
+python -m TEsorter ../EDTA/ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.mod.EDTA.TElib.fa -p 5 -db rexdb-plant
