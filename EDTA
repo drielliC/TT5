@@ -133,3 +133,30 @@ e 1
 
 ############################TEsorter#########################################################
 python -m TEsorter ../EDTA/ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.mod.EDTA.TElib.fa -p 5 -db rexdb-plant
+
+
+  nano stats.py                                                                                                
+import pandas as pd
+
+# Carregar o arquivo .classify.tsv (substitua pelo caminho correto)
+file_path = '~/Desktop/SIF/TEsorter/ISCPUB_v0.2.h1_scaffolds.yahs_final_mod.fa.mod.EDTA.TElib.fa.rexdb-plant.cls.tsv'  # Insira o caminho correto
+df = pd.read_csv(file_path, sep='\t')
+
+# Verifique se as colunas relevantes estão presentes
+if 'Superfamily' in df.columns and 'Length' in df.columns:
+    # Calcular o tamanho total do genoma somando todos os comprimentos de elementos repetitivos
+    total_genome_size = df['Length'].sum()
+    
+    # Agrupar por 'Superfamily' e somar os comprimentos
+    class_summary = df.groupby('Superfamily')['Length'].sum().reset_index()
+    
+    # Calcular a porcentagem de cada classe no genoma
+    class_summary['Percentage'] = (class_summary['Length'] / total_genome_size) * 100
+    
+    # Exibir os resultados
+    print("Classes de elementos repetitivos e suas porcentagens no genoma:")
+    print(class_summary[['Superfamily', 'Length', 'Percentage']])
+    
+else:
+    print("As colunas 'Superfamily' e 'Length' não foram encontradas no arquivo.")
+
