@@ -1,40 +1,40 @@
-https://bioinfo-dirty-jobs.github.io/rana2//lectures/07.rnaseq_hisat2/#generate-bam-files-using-samtools
+Alinhar com STAR
 
-hisat2 -h
+STAR2.sh
+#!/bin/bash
 
-#Align Reads Using HISAT2
-__________________________________________________________________________________________________________
-#!/usr/bin/bash
+# Caminho para a pasta contendo os arquivos FASTQ
+input_dir="/home/andreiat/Documents/alunos/driii/dataUNICAMP"
 
-#bash script for hisat2; align all .fastq.gz files to indexed reference genome to generate .sam files
+# Caminho de saída para os resultados do STAR
+output_dir="/home/andreiat/Documents/alunos/driii/dataUNICAMP/mapped"
 
-SAMPLES="C12-35 C12-36 C12-38 C12-39 C12-42 C1-45 C1-47 C1-49 C1-50 C1-51 C1-52 C1-54 C1-55 C2-62 C2-63 C2-69 C2-72 C3-77 C3-78 C3-80 C3-82 C3-83 C3-84 C3->
-for SAMPLE in $SAMPLES; do
-    hisat2 -p 11 --dta -x ~/Documents/alunos/driii/dataUNICAMP/ISCPUB_v0.2_masked_index -1 ~/Documents/alunos/driii/dataUNICAMP/${SAMPLE}_1_val_1.fq.gz -2 >done
+# Caminho para o genoma indexado
+genome_dir="/home/andreiat/Documents/alunos/driii/dataUNICAMP"
 
-__________________________________________________________________________________________________________
-#Generate BAM Files Using SAMTools
+# Garante que a pasta de saída exista
+mkdir -p ${output_dir}
 
-#!/usr/bin/bash
+# Loop sobre todos os arquivos de FASTQ com o padrão _1_val_1.fq.gz
+for f in $(ls ${input_dir}/*_1_val_1.fq.gz | sed 's/_1_val_1.fq.gz//' | sort -u)
+do
+  base_name=$(basename $f) # Nome base do arquivo sem o sufixo
 
-#bash script for samtools; convert .sam files to .bam files
-
-SAMPLES="C12-35 C12-36 C12-38 C12-39 C12-42 C1-45 C1-47 C1-49 C1-50 C1-51 C1-52 C1-54 C1-55 C2-62 C2-63 C2-69 C2-72 C3-77 C3-78 C3-80 C3-82 C3-83 C3-84 C3->
-
-for SAMPLE in $SAMPLES; do
-    samtools sort -@ 11 -o ${SAMPLE}_chrX.bam ${SAMPLE}_ISC.sam
+  echo "Processando par: ${base_name}_1_val_1.fq.gz e ${base_name}_2_val_2.fq.gz"
+  
+  # Executa o STAR para os pares de arquivos de entrada com parâmetros ajustados
+  STAR --genomeDir ${genome_dir} \
+       --readFilesIn ${input_dir}/${base_name}_1_val_1.fq.gz ${input_dir}/${base_name}_2_val_2.fq.gz \
+       --readFilesCommand zcat \
+       --outSAMtype BAM SortedByCoordinate \
+       --outFileNamePrefix ${output_dir}/${base_name}_ \
+       --runThreadN 8 \
+       --outFilterMultimapNmax 1 \
+       --winAnchorMultimapNmax 50 \
+       --outFilterMismatchNmax 2 \
+       --alignSJoverhangMin 8 \
+       --alignSJDBoverhangMin 5 \
+       --alignIntronMin 20 \
+       --alignIntronMax 10000 \
+       --alignMatesGapMax 10000
 done
-__________________________________________________________________________________________________________
-#Index BAM Files Using SAMTools
-
-#!/usr/bin/bash
-
-#bash script for samtools; index our .bam files to obtain .bam.bai files using samtools
-
-SAMPLES="ERR188044 ERR188104 ERR188234 ERR188245 ERR188257 ERR188273 ERR188337 ERR188383 ERR188401 ERR188428 ERR188454 ERR204916"
-
-for SAMPLE in $SAMPLES; do
-    samtools index ${SAMPLE}_chrX.bam ${SAMPLE}_chrX.bam.bai
-done
-
-
