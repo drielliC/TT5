@@ -455,3 +455,45 @@ Importância do parâmetro:
 Definir corretamente o -s é essencial para garantir que as leituras sejam atribuídas aos genes corretos durante a contagem de features. Se a orientação de cadeia não for configurada corretamente, isso pode levar a erros na contagem de reads e, consequentemente, na análise de expressão diferencial.
 
 Em seu caso, como mencionado anteriormente, com o uso do kit TruSeq stranded mRNA, é provável que você precise usar -s 2.
+
+___________________________________________________________________________________________________________________________________
+> summary(res)
+
+out of 23804 with nonzero total read count
+adjusted p-value < 0.1
+LFC > 0 (up)       : 4190, 18%
+LFC < 0 (down)     : 2885, 12%
+outliers [1]       : 0, 0%
+low counts [2]     : 486, 2%
+(mean count < 0)
+[1] see 'cooksCutoff' argument of ?results
+[2] see 'independentFiltering' argument of ?results
+
+ sum(res$padj < 0.1, na.rm=TRUE)
+[1] 7075
+
+> # create a datframe just holding the top 10 genes
+> Top_Hits = head(arrange(data,pvalue),10)
+> Top_Hits
+                          baseMean log2FoldChange     lfcSE      stat       pvalue
+evm.TU.scaffold_1a.2083 1044.12155     -13.171658 0.6574551 -20.03431 2.766648e-89
+evm.TU.scaffold_1a.171   286.33795       9.978842 0.5706613  17.48645 1.817196e-68
+evm.TU.scaffold_6.628     12.43285      -7.191505 0.4865253 -14.78136 1.932272e-49
+evm.TU.scaffold_5.405     51.37357       8.320230 0.6052489  13.74679 5.323996e-43
+evm.TU.scaffold_1.656     68.23184       9.029710 0.6844658  13.19235 9.711278e-40
+evm.TU.Scaffold_1b.1299  187.82462      -7.590403 0.5867722 -12.93586 2.824477e-38
+evm.TU.scaffold_7.1461    28.54956      -7.013450 0.5463255 -12.83749 1.010954e-37
+evm.TU.scaffold_7.956     43.82965       5.973319 0.4773398  12.51377 6.277577e-36
+evm.TU.Scaffold_1b.1346  105.33307      -8.930430 0.7253616 -12.31169 7.836150e-35
+evm.TU.scaffold_1.2002   102.35983       3.870264 0.3150519  12.28453 1.096816e-34
+                                padj     Expression
+evm.TU.scaffold_1a.2083 6.457909e-85 Down-regulated
+evm.TU.scaffold_1a.171  2.120850e-64   Up-regulated
+evm.TU.scaffold_6.628   1.503437e-45 Down-regulated
+evm.TU.scaffold_5.405   3.106818e-39   Up-regulated
+evm.TU.scaffold_1.656   4.533613e-36   Up-regulated
+evm.TU.Scaffold_1b.1299 1.098816e-34 Down-regulated
+evm.TU.scaffold_7.1461  3.371097e-34 Down-regulated
+evm.TU.scaffold_7.956   1.831640e-32   Up-regulated
+evm.TU.Scaffold_1b.1346 2.032349e-31 Down-regulated
+evm.TU.scaffold_1.2002  2.560189e-31   Up-regulated
