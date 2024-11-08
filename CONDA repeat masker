@@ -19,8 +19,7 @@ bash
 
 perl /home/andreiat/database/RepeatMasker/configure
 
-
-
+source ~/.bashrc
 
 ############################################
 1. Ativar o ambiente conda
