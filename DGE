@@ -39,7 +39,6 @@ do
        --alignMatesGapMax 10000
 done
 _____________________________________________________________________________________________________________
-https://ashleyschwartz.com/posts/2023/05/deseq2-tutorial
 ./featurecount.sh
 ___________________________________________________________________________-
 //========================== featureCounts setting ===========================\\
@@ -458,6 +457,7 @@ Definir corretamente o -s é essencial para garantir que as leituras sejam atrib
 Em seu caso, como mencionado anteriormente, com o uso do kit TruSeq stranded mRNA, é provável que você precise usar -s 2.
 
 ___________________________________________________________________________________________________________________________________
+https://ashleyschwartz.com/posts/2023/05/deseq2-tutorial
 > summary(res)
 
 out of 23804 with nonzero total read count
