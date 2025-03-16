@@ -1,6 +1,6 @@
-Alinhar com STAR
-
+Alinhamento com STAR
 STAR2.sh
+
 #!/bin/bash
 
 # Caminho para a pasta contendo os arquivos FASTQ
@@ -38,8 +38,9 @@ do
        --alignIntronMax 10000 \
        --alignMatesGapMax 10000
 done
-
-
+_____________________________________________________________________________________________________________
+https://ashleyschwartz.com/posts/2023/05/deseq2-tutorial
+./featurecount.sh
 ___________________________________________________________________________-
 //========================== featureCounts setting ===========================\\
 ||                                                                            ||
